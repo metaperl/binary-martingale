@@ -2,9 +2,16 @@
 users = []
 
 
-user = dict(
-    username = "jahrastafari",
-    password = "ganja1",
-)
+class User(object):
 
-users.append(user)
+    def __init__(self):
+
+        self.live = dict(
+            username = "metaperl@gmail.com",
+            password = "Metaperl1",
+        )
+
+        self.demo = dict(
+            username = "metaperl@gmail.com",
+            password = "Metaperl1",
+        )
