@@ -125,6 +125,9 @@ Natalie: 22:00 BST = 17:00 EST
         )
         return result
 
+def my_time(dt):
+    return dt.strftime('%I:%M%p')
+
 
 class Entry(object):
 
@@ -277,14 +280,14 @@ class Entry(object):
             notice = """
 
 Halting trading... {0} is nearing/in maintenance window of
-{1} to {2}.
-We dont want to get in the middle of a trading sequence and have to stop.
+{1} to {2}. We dont want to get in the middle of
+a trading sequence and have to stop.
 
             """
             print(notice.format(
                 current_time(),
-                maintenance_window['start'],
-                maintenance_window['finish']
+                my_time(maintenance_window['start']),
+                my_time(maintenance_window['finish'])
                 )
             )
             time.sleep(ten_minutes)
