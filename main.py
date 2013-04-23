@@ -18,6 +18,7 @@ import traceback
 
 # pypi
 from blargs   import Parser
+from clint.textui import progress
 from splinter import Browser
 
 # local
@@ -33,9 +34,10 @@ action_path = dict(
     auctions = 'auctions'
 )
 
-one_minute  = 60
-ten_minutes = 10 * one_minute
-one_hour    = 3600
+one_minute    = 60
+three_minutes = 3 * one_minute
+ten_minutes   = 10 * one_minute
+one_hour      = 3600
 
 def martingale_sequence():
     l = [1,2,5,12,30,75,180,440]
@@ -62,10 +64,11 @@ def time_in_range(start, end, x):
 
 class Entry(object):
 
-    def __init__(self, user, browser, url):
+    def __init__(self, user, browser, url, direction):
         self.user=user
         self.browser=browser
         self.url=url
+        self.direction=direction
 
     def login(self):
         print("Logging in...")
@@ -85,9 +88,10 @@ class Entry(object):
         button.click()
 
 
-    def click_higher(self):
+    def choose_direction(self):
         time.sleep(6)
-        button = self.browser.find_by_xpath('//*[@class="bet_button higher button"]')
+        lookup = '//*[@class="bet_button {0} button"]'.format(self.direction)
+        button = self.browser.find_by_xpath(lookup)
         button.click()
 
     def input_stake(self, amount):
@@ -114,46 +118,97 @@ class Entry(object):
     def won(self, result):
         return "WON" in result
 
-    def winning_result(self):
+    def trade_result(self):
+        """1 = win
+        0 = tie
+        -1 = lost"""
         table = self.browser.find_by_id('completed_investments')
         tbody = table.find_by_tag('tbody')
         tr = tbody.find_by_tag('tr').first
-        #print "Checking for winning result in this html", tr.html
-        return self.won(tr['class'])
+        result = tr['class']
+        if "PUSH" in result:
+            return 0
+        elif "WON" in result:
+            return 1
+        elif "LOST" in result:
+            return -1
+        else:
+            print(result, "is not recognized")
+            sys.exit(1)
 
     def active_trades(self):
         active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
         tbody = active_investments_table.find_by_tag('tbody').first
-        td = tbody.find_by_tag('td').first
-        if td['class'] == 'dataTables_empty':
+        try:
+            if (tbody.find_by_tag('td').first)['class'] == 'dataTables_empty':
+                return 0
+            else:
+                return 1
+        except:
+            print("\tsome error checking status of datatable. returning 0")
             return 0
-        else:
-            return 1
+
+    def wait_for_active_trade_to_finish(self):
+        time.sleep(10)
+        active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
+        tbody = active_investments_table.find_by_tag('tbody').first
+        tds = tbody.find_by_tag('td')
+        date_td = tds[5]
+        date = date_td.value # Apr 22, 19:25:00
+        dt = datetime.datetime.strptime(date, '%b %d, %H:%M:%S')
+        n = datetime.datetime.now()
+        dt = dt.replace(n.year)
+
+        diff = dt - n
+        wait_time = int(round(diff.total_seconds()) + 30)
+
+        print("waiting", wait_time, "seconds")
+
+        for i in progress.bar(range(wait_time)):
+            time.sleep(1)
+
 
     def poll_for_active_trades(self):
-        at = self.active_trades()
-        #print "Active trades", at
-        if self.active_trades() > 0:
-            time.sleep(5)
-            return self.poll_for_active_trades()
-        else:
-            return None
+        while True:
+            if not self.active_trades():
+                return
+            else:
+                time.sleep(10)
 
-    def trade(self, seq):
-        self.select_asset()
-        self.click_higher()
-        self.input_stake(seq.next())
+    def _trade(self, stake):
+        self.input_stake(stake)
         self.buy()
-        time.sleep(60)
-        self.poll_for_active_trades()
-        if self.winning_result():
-            print("won")
-            return
+
+        self.wait_for_active_trade_to_finish()
+
+        print("\t -> ", end="")
+
+        if self.trade_result() > 0:
+            print("won. Let us take 60 seconds to rejoice!")
+            time.sleep(one_minute)
+            return 1
+        elif self.trade_result() < 0:
+            print("lost. increasing stake")
+            return -1
         else:
-            print("lost. increasing bet")
+            print("draw. stay the same?")
+            self._trade(stake)
+
+
+    def trade(self, seq, iterate=True):
+
+        stake = seq.next()
+
+        result = self._trade(stake)
+
+        if result > 0:
+            return
+        elif result < 0:
             self.trade(seq)
 
-    def in_maintence_window(self):
+
+
+    def in_maintenance_window(self):
         """
 Natalie: Hello, welcome to Markets World, how may I help you?
 
@@ -180,12 +235,12 @@ Natalie: 22:00 BST = 17:00 EST
 
         maintenance_window = dict(
             start  = datetime.datetime.today().replace(hour=14, minute=50),
-            finish = datetime.datetime.today().replace(hour=17, minute=50),
+            finish = datetime.datetime.today().replace(hour=17, minute=15),
         )
 
         result = time_in_range(
             maintenance_window['start'],
-            maintenance_window['end'],
+            maintenance_window['finish'],
             current_time
         )
 
@@ -203,14 +258,18 @@ def main(bid_url=None):
     args = dict()
     with Parser(args) as p:
         p.flag('live')
+        p.flag('lower')
 
     with Browser() as browser:
 
         _u = user.User()
         key = 'live' if args['live'] else 'demo'
+        direction = 'lower' if args['lower'] else 'higher'
         u = getattr(_u, key)
-        e = Entry(u, browser, bid_url)
+        e = Entry(u, browser, bid_url, direction)
         e.login()
+        e.select_asset()
+        e.choose_direction()
 
         while True:
             s = martingale_sequence()
