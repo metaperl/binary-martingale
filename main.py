@@ -170,11 +170,12 @@ class Entry(object):
         return button.value
 
     def wait_for_enabled_buy_button(self):
-        if self.buy_button_value() == 'BUY':
-            return True
-        else:
-            time.sleep(1)
-            return self.wait_for_enabled_buy_button()
+        while True:
+            if self.buy_button_value() == 'BUY':
+                break
+            else:
+                time.sleep(1)
+
 
     def buy(self):
         self.wait_for_enabled_buy_button()
@@ -275,7 +276,7 @@ class Entry(object):
             self.trade(seq)
 
 
-    def check_for_maintenance_window(self):
+    def check_for_maintenance_window(self, entered=False):
         if in_maintenance_window():
             notice = """
 
@@ -291,9 +292,9 @@ a trading sequence and have to stop.
                 )
             )
             time.sleep(ten_minutes)
-            return self.check_for_maintenance_window()
+            return self.check_for_maintenance_window(True)
         else:
-            return None
+            return entered
 
 
 
@@ -304,23 +305,26 @@ def main(bid_url=None):
         p.flag('lower')
         p.int('start-at')
 
-    with Browser() as browser:
+    while True:
+        with Browser() as browser:
 
-        _u = user.User()
-        key = 'live' if args['live'] else 'demo'
-        direction = 'lower' if args['lower'] else 'higher'
-        print("Start at = {0}".format(args['start-at']))
+            _u = user.User()
+            key = 'live' if args['live'] else 'demo'
+            direction = 'lower' if args['lower'] else 'higher'
+            print("Start at = {0}".format(args['start-at']))
 
-        u = getattr(_u, key)
-        e = Entry(u, browser, bid_url, direction)
-        e.login()
-        e.select_asset()
-        e.choose_direction()
+            u = getattr(_u, key)
+            e = Entry(u, browser, bid_url, direction)
+            e.login()
+            e.select_asset()
+            e.choose_direction()
 
-        while True:
-            e.check_for_maintenance_window()
-            s = martingale_sequence(args['start-at'])
-            e.trade(s)
+            while True:
+                if e.check_for_maintenance_window():
+                    break
+                else:
+                    s = martingale_sequence(args['start-at'])
+                    e.trade(s)
 
 
 if __name__ == '__main__':
