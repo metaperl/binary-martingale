@@ -39,8 +39,14 @@ three_minutes = 3 * one_minute
 ten_minutes   = 10 * one_minute
 one_hour      = 3600
 
-def martingale_sequence():
+def martingale_sequence(start_at):
     l = [1,2,5,12,30,75,180,440]
+
+    if start_at:
+        print("Original sequence = ", l)
+        l = l[(start_at - 1):]
+        print("Revised sequence  = ", l)
+
     return iter(l)
 
 def url_for_action(action):
@@ -48,6 +54,20 @@ def url_for_action(action):
 
 def loop_forever():
     while True: pass
+
+
+def try_method(fn):
+    @wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return fn(self, *args, **kwargs)
+        except:
+            print(traceback.format_exc())
+            while True: pass
+
+    return wrapper
+
+# --- a "class" of maint window functions
 
 def current_time():
     now = datetime.datetime.now()
@@ -60,6 +80,50 @@ def time_in_range(start, end, x):
         return start <= x <= end
     else:
         return start <= x or x <= end
+
+maintenance_window = dict(
+    start  = datetime.datetime.today().replace(hour=14, minute=50),
+    finish = datetime.datetime.today().replace(hour=17, minute=15),
+)
+
+
+def in_maintenance_window():
+        """
+Natalie: Hello, welcome to Markets World, how may I help you?
+
+Terrence: hello...
+
+Terrence: what time of the day do the programmers halt all trading activity?
+
+Natalie: Our platform has binary trading available 24 hours 5 days a week whilst the world markets are open for trading. This is from Sunday 22:00 London (17:00 New York) to Friday at the same time.
+
+Terrence: yes, but trading was halted yesterday.
+
+Natalie: during 21:50 - 22:00 BST there is a 10 minute gap where all assets are close, this something occurs everyday due to how our platform was designed.
+
+Terrence: what is "BST"? I'm in the New York time zone.
+
+Natalie: BST means "British Summer Time"
+
+nTerrence: Is that the same at GMT?
+
+Natalie: 22:00 BST = 17:00 EST
+"""
+
+        current_time = datetime.datetime.now()
+
+
+        # for k,v in maintenance_window.iteritems():
+        #     print(k,v)
+
+        # print(current_time)
+
+        result = time_in_range(
+            maintenance_window['start'],
+            maintenance_window['finish'],
+            current_time
+        )
+        return result
 
 
 class Entry(object):
@@ -160,7 +224,7 @@ class Entry(object):
         dt = dt.replace(n.year)
 
         diff = dt - n
-        wait_time = int(round(diff.total_seconds()) + 30)
+        wait_time = int(round(diff.total_seconds()) + 55)
 
         print("waiting", wait_time, "seconds")
 
@@ -184,17 +248,18 @@ class Entry(object):
         print("\t -> ", end="")
 
         if self.trade_result() > 0:
-            print("won. Let us take 60 seconds to rejoice!")
+            print("won. Let us take 60 seconds to rejoice!\n")
             time.sleep(one_minute)
             return 1
         elif self.trade_result() < 0:
-            print("lost. increasing stake")
+            print("\tlost. Increasing stake")
             return -1
         else:
             print("draw. stay the same?")
             self._trade(stake)
 
 
+    @try_method
     def trade(self, seq, iterate=True):
 
         stake = seq.next()
@@ -207,46 +272,21 @@ class Entry(object):
             self.trade(seq)
 
 
-
-    def in_maintenance_window(self):
-        """
-Natalie: Hello, welcome to Markets World, how may I help you?
-
-Terrence: hello...
-
-Terrence: what time of the day do the programmers halt all trading activity?
-
-Natalie: Our platform has binary trading available 24 hours 5 days a week whilst the world markets are open for trading. This is from Sunday 22:00 London (17:00 New York) to Friday at the same time.
-
-Terrence: yes, but trading was halted yesterday.
-
-Natalie: during 21:50 - 22:00 BST there is a 10 minute gap where all assets are close, this something occurs everyday due to how our platform was designed.
-
-Terrence: what is "BST"? I'm in the New York time zone.
-
-Natalie: BST means "British Summer Time"
-
-Terrence: Is that the same at GMT?
-
-Natalie: 22:00 BST = 17:00 EST
-"""
-
-        current_time = datetime.datetime.now()
-
-        maintenance_window = dict(
-            start  = datetime.datetime.today().replace(hour=14, minute=50),
-            finish = datetime.datetime.today().replace(hour=17, minute=15),
-        )
-
-        result = time_in_range(
-            maintenance_window['start'],
-            maintenance_window['finish'],
-            current_time
-        )
-
     def check_for_maintenance_window(self):
-        if self.in_maintenance_window():
-            print("\tHalting trading... in maintenance window")
+        if in_maintenance_window():
+            notice = """
+
+Halting trading... {0} is nearing/in maintenance window of
+{1} to {2}.
+We dont want to get in the middle of a trading sequence and have to stop.
+
+            """
+            print(notice.format(
+                current_time(),
+                maintenance_window['start'],
+                maintenance_window['finish']
+                )
+            )
             time.sleep(ten_minutes)
             return self.check_for_maintenance_window()
         else:
@@ -259,12 +299,15 @@ def main(bid_url=None):
     with Parser(args) as p:
         p.flag('live')
         p.flag('lower')
+        p.int('start-at')
 
     with Browser() as browser:
 
         _u = user.User()
         key = 'live' if args['live'] else 'demo'
         direction = 'lower' if args['lower'] else 'higher'
+        print("Start at = {0}".format(args['start-at']))
+
         u = getattr(_u, key)
         e = Entry(u, browser, bid_url, direction)
         e.login()
@@ -272,9 +315,10 @@ def main(bid_url=None):
         e.choose_direction()
 
         while True:
-            s = martingale_sequence()
-            e.trade(s)
             e.check_for_maintenance_window()
+            s = martingale_sequence(args['start-at'])
+            e.trade(s)
+
 
 if __name__ == '__main__':
     main(base_url)
