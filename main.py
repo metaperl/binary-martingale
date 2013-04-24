@@ -40,7 +40,7 @@ ten_minutes   = 10 * one_minute
 one_hour      = 3600
 
 def martingale_sequence(start_at):
-    l = [1,2,5,12,30,75,180,440]
+    l = [1,2,5,12,30,75,180,440,1066,2590,6290]
 
     if start_at:
         print("Original sequence = ", l)
@@ -221,6 +221,7 @@ class Entry(object):
         active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
         tbody = active_investments_table.find_by_tag('tbody').first
         tds = tbody.find_by_tag('td')
+        expiry_td = tds[0].value
         date_td = tds[5]
         date = date_td.value # Apr 22, 19:25:00
         dt = datetime.datetime.strptime(date, '%b %d, %H:%M:%S')
@@ -228,7 +229,7 @@ class Entry(object):
         dt = dt.replace(n.year)
 
         diff = dt - n
-        wait_time = int(round(diff.total_seconds()) + 55)
+        wait_time = int(round(diff.total_seconds()) + 60)
 
         print("waiting", wait_time, "seconds")
 
@@ -260,7 +261,7 @@ class Entry(object):
             return -1
         else:
             print("draw. stay the same?")
-            self._trade(stake)
+            return self._trade(stake)
 
 
     @try_method
