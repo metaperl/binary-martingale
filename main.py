@@ -39,15 +39,21 @@ three_minutes = 3 * one_minute
 ten_minutes   = 10 * one_minute
 one_hour      = 3600
 
-def martingale_sequence(start_at):
-    l = [1,2,5,12,30,75,180,440,1066,2590,6290]
+martseq = [1,2,5,12,30,75,180,440,1066,2590,6290]
+def martingale_sequence(start_at=0):
+
 
     if start_at:
-        print("Original sequence = ", l)
-        l = l[(start_at - 1):]
-        print("Revised sequence  = ", l)
+        print("Original sequence = ", martseq)
+        martseq = martseq[(start_at - 1):]
+        print("Revised sequence  = ", martseq)
 
-    return iter(l)
+    return iter(martseq)
+
+def show_seq():
+    for i, e in enumerate(martseq):
+        print(1+i, e)
+
 
 def url_for_action(action):
     return "{0}/{1}".format(base_url,action_path[action])
@@ -253,14 +259,14 @@ class Entry(object):
         print("\t -> ", end="")
 
         if self.trade_result() > 0:
-            print("won. Let us take 60 seconds to rejoice!\n")
+            print("\t* Won * Let us take 60 seconds to rejoice!\n")
             time.sleep(one_minute)
             return 1
         elif self.trade_result() < 0:
-            print("\tlost. Increasing stake")
+            print("Lost. Increasing stake")
             return -1
         else:
-            print("draw. stay the same?")
+            print("Draw. Stake remains the same.")
             return self._trade(stake)
 
 
@@ -304,7 +310,12 @@ def main(bid_url=None):
     with Parser(args) as p:
         p.flag('live')
         p.flag('lower')
-        p.int('start-at')
+        p.int('resume-at')
+        p.flag('show-sequence')
+
+    if args['show-sequence']:
+        show_seq()
+        sys.exit(0)
 
     while True:
         with Browser() as browser:
@@ -312,7 +323,7 @@ def main(bid_url=None):
             _u = user.User()
             key = 'live' if args['live'] else 'demo'
             direction = 'lower' if args['lower'] else 'higher'
-            print("Start at = {0}".format(args['start-at']))
+            resume_at = args['resume-at']
 
             u = getattr(_u, key)
             e = Entry(u, browser, bid_url, direction)
@@ -324,8 +335,10 @@ def main(bid_url=None):
                 if e.check_for_maintenance_window():
                     break
                 else:
-                    s = martingale_sequence(args['start-at'])
+                    s = martingale_sequence(resume_at)
                     e.trade(s)
+
+                resume_at = 0
 
 
 if __name__ == '__main__':
