@@ -11,6 +11,7 @@ import datetime
 from functools import wraps
 import pdb
 import pprint
+import random
 import re
 import sys
 import time
@@ -39,9 +40,12 @@ three_minutes = 3 * one_minute
 ten_minutes   = 10 * one_minute
 one_hour      = 3600
 
-martseq = [1,2,5,12,30,75,180,440,1066,2590,6290]
+# https://sheet.zoho.com/public/thequietcenter/martingale
+martseq = [1,2.86,6.94,16.86,40.95,99.45,241.51,586.53,1424.44,3459.35]
+martseq = martseq[0:8]
 def martingale_sequence(start_at=0):
 
+    global martseq
 
     if start_at:
         print("Original sequence = ", martseq)
@@ -75,10 +79,14 @@ def try_method(fn):
 
 # --- a "class" of maint window functions
 
+
+
 def current_time():
     now = datetime.datetime.now()
     return now.strftime("%I:%M%p")
 
+def current_time_log_format():
+    return "[ {0} ]".format(current_time())
 
 def time_in_range(start, end, x):
     """Return true if x is in the range [start, end]"""
@@ -89,7 +97,7 @@ def time_in_range(start, end, x):
 
 maintenance_window = dict(
     start  = datetime.datetime.today().replace(hour=14, minute=50),
-    finish = datetime.datetime.today().replace(hour=17, minute=15),
+    finish = datetime.datetime.today().replace(hour=17, minute=05),
 )
 
 
@@ -168,7 +176,7 @@ class Entry(object):
         button.click()
 
     def input_stake(self, amount):
-        print("[ {0} ] entering stake {1}: ".format(current_time(), amount), end="")
+        print("{0} entering stake {1}: ".format(current_time_log_format(), amount), end="")
         input = self.browser.fill('amount', str(amount))
 
     def buy_button_value(self):
@@ -222,25 +230,51 @@ class Entry(object):
             print("\tsome error checking status of datatable. returning 0")
             return 0
 
-    def wait_for_active_trade_to_finish(self):
-        time.sleep(10)
-        active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
-        tbody = active_investments_table.find_by_tag('tbody').first
-        tds = tbody.find_by_tag('td')
-        expiry_td = tds[0].value
-        date_td = tds[5]
+    def show_progress_til_expiry(self, date_td):
+        date_td
         date = date_td.value # Apr 22, 19:25:00
         dt = datetime.datetime.strptime(date, '%b %d, %H:%M:%S')
         n = datetime.datetime.now()
         dt = dt.replace(n.year)
 
         diff = dt - n
-        wait_time = int(round(diff.total_seconds()) + 60)
+        wait_time = int(round(diff.total_seconds()) + 10)
 
         print("waiting", wait_time, "seconds")
 
         for i in progress.bar(range(wait_time)):
             time.sleep(1)
+
+    def wait_until_active_trade_is_completed(self, expiry_date_string):
+        while True:
+            time.sleep(1)
+            try:
+                table = self.browser.find_by_id('completed_investments')
+                tbody = table.find_by_tag('tbody')
+                latest_completed_trade_string = tbody.find_by_tag('td').first.value
+                #print("Latest completed trade date: {0}. Expiry_date_string: {1}.", latest_completed_trade_string, expiry_date_string)
+                if latest_completed_trade_string == expiry_date_string:
+                    break
+            except e:
+                print("Error reading DOM: {1}".format(e.strerror))
+                continue
+
+
+
+
+
+    def wait_for_active_trade_to_finish(self):
+        time.sleep(10)
+        active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
+        tbody = active_investments_table.find_by_tag('tbody').first
+        tds = tbody.find_by_tag('td')
+
+        expiry_date_string = tds[0].value
+        self.show_progress_til_expiry(tds[5])
+
+        self.wait_until_active_trade_is_completed(expiry_date_string)
+
+
 
 
     def poll_for_active_trades(self):
@@ -259,8 +293,9 @@ class Entry(object):
         print("\t -> ", end="")
 
         if self.trade_result() > 0:
-            print("\t* Won * Let us take 60 seconds to rejoice!\n")
-            time.sleep(one_minute)
+            rejoice = random.randint(60,90)
+            print("\t* Won * Let us take", rejoice, "seconds to rejoice!\n")
+            time.sleep(rejoice)
             return 1
         elif self.trade_result() < 0:
             print("Lost. Increasing stake")
@@ -285,20 +320,14 @@ class Entry(object):
 
     def check_for_maintenance_window(self, entered=False):
         if in_maintenance_window():
-            notice = """
-
-Halting trading... {0} is nearing/in maintenance window of
-{1} to {2}. We dont want to get in the middle of
-a trading sequence and have to stop.
-
-            """
+            notice = "{0} Halting trading: in/near maintenance window of {1} to {2}"
             print(notice.format(
-                current_time(),
+                current_time_log_format(),
                 my_time(maintenance_window['start']),
                 my_time(maintenance_window['finish'])
                 )
             )
-            time.sleep(ten_minutes)
+            time.sleep(three_minutes)
             return self.check_for_maintenance_window(True)
         else:
             return entered
@@ -333,7 +362,7 @@ def main(bid_url=None):
 
             while True:
                 if e.check_for_maintenance_window():
-                    break
+                    pass
                 else:
                     s = martingale_sequence(resume_at)
                     e.trade(s)
