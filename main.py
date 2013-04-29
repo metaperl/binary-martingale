@@ -238,7 +238,7 @@ class Entry(object):
         dt = dt.replace(n.year)
 
         diff = dt - n
-        wait_time = int(round(diff.total_seconds()) + 10)
+        wait_time = int(round(diff.total_seconds()))
 
         #print("waiting", wait_time, "seconds")
 
@@ -290,15 +290,16 @@ class Entry(object):
 
         self.wait_for_active_trade_to_finish()
 
-        #print("\t -> ", end="")
+        #print("\t ", end="")
 
         if self.trade_result() > 0:
             rejoice = random.randint(60,90)
-            print("*Win* Let us take", rejoice, "seconds to rejoice!\n")
+            print("* ITM * Let us take", rejoice, "seconds to rejoice!\n")
+            print("---------------------------------------------------------")
             time.sleep(rejoice)
             return 1
         elif self.trade_result() < 0:
-            print("Loss.")
+            print("OTM")
             return -1
         else:
             print("Draw. Stake remains the same.")
