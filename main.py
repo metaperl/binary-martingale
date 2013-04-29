@@ -42,7 +42,7 @@ one_hour      = 3600
 
 # https://sheet.zoho.com/public/thequietcenter/martingale
 martseq = [1,2.86,6.94,16.86,40.95,99.45,241.51,586.53,1424.44,3459.35]
-martseq = martseq[0:8]
+#martseq = martseq[0:9]
 def martingale_sequence(start_at=0):
 
     global martseq
@@ -175,8 +175,8 @@ class Entry(object):
         button = self.browser.find_by_xpath(lookup)
         button.click()
 
-    def input_stake(self, amount):
-        print("{0} entering stake {1}: ".format(current_time_log_format(), amount), end="")
+    def input_stake(self, stake_i, amount):
+        print("{0} Stake {1} = ${2} ".format(current_time_log_format(), stake_i, amount))
         input = self.browser.fill('amount', str(amount))
 
     def buy_button_value(self):
@@ -240,7 +240,7 @@ class Entry(object):
         diff = dt - n
         wait_time = int(round(diff.total_seconds()) + 10)
 
-        print("waiting", wait_time, "seconds")
+        #print("waiting", wait_time, "seconds")
 
         for i in progress.bar(range(wait_time)):
             time.sleep(1)
@@ -284,38 +284,36 @@ class Entry(object):
             else:
                 time.sleep(10)
 
-    def _trade(self, stake):
-        self.input_stake(stake)
+    def _trade(self, stake_i, stake):
+        self.input_stake(stake_i, stake)
         self.buy()
 
         self.wait_for_active_trade_to_finish()
 
-        print("\t -> ", end="")
+        #print("\t -> ", end="")
 
         if self.trade_result() > 0:
             rejoice = random.randint(60,90)
-            print("\t* Won * Let us take", rejoice, "seconds to rejoice!\n")
+            print("*Win* Let us take", rejoice, "seconds to rejoice!\n")
             time.sleep(rejoice)
             return 1
         elif self.trade_result() < 0:
-            print("Lost. Increasing stake")
+            print("Loss.")
             return -1
         else:
             print("Draw. Stake remains the same.")
-            return self._trade(stake)
+            return self._trade(stake_i, stake)
 
 
     @try_method
     def trade(self, seq, iterate=True):
 
-        stake = seq.next()
+        for i, stake in enumerate(seq, start=1):
+            result = self._trade(i, stake)
 
-        result = self._trade(stake)
+            if result > 0:
+                break
 
-        if result > 0:
-            return
-        elif result < 0:
-            self.trade(seq)
 
 
     def check_for_maintenance_window(self, entered=False):
@@ -339,7 +337,7 @@ def main(bid_url=None):
     with Parser(args) as p:
         p.flag('live')
         p.flag('lower')
-        p.int('resume-at')
+        p.int('start-at')
         p.flag('show-sequence')
 
     if args['show-sequence']:
@@ -352,7 +350,7 @@ def main(bid_url=None):
             _u = user.User()
             key = 'live' if args['live'] else 'demo'
             direction = 'lower' if args['lower'] else 'higher'
-            resume_at = args['resume-at']
+            start_at = args['start-at']
 
             u = getattr(_u, key)
             e = Entry(u, browser, bid_url, direction)
@@ -364,10 +362,10 @@ def main(bid_url=None):
                 if e.check_for_maintenance_window():
                     pass
                 else:
-                    s = martingale_sequence(resume_at)
+                    s = martingale_sequence(start_at)
                     e.trade(s)
 
-                resume_at = 0
+                start_at = 0
 
 
 if __name__ == '__main__':
