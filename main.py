@@ -23,7 +23,9 @@ from clint.textui import progress
 from splinter import Browser
 
 # local
+import martingale
 import user
+
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -41,16 +43,10 @@ ten_minutes   = 10 * one_minute
 one_hour      = 3600
 
 # https://sheet.zoho.com/public/thequietcenter/martingale
-martseq = [1,2.86,6.94,16.86,40.95,99.45,241.51,586.53,1424.44,3459.35]
-#martseq = martseq[0:9]
-def martingale_sequence(start_at=0):
 
-    global martseq
+def martingale_sequence(seed_bet, step_profit):
 
-    if start_at:
-        print("Original sequence = ", martseq)
-        martseq = martseq[(start_at - 1):]
-        print("Revised sequence  = ", martseq)
+    martseq = martingale.currency_ify(martingale.sequence(seed_bet, step_profit))
 
     return iter(martseq)
 
@@ -338,7 +334,9 @@ def main(bid_url=None):
     with Parser(args) as p:
         p.flag('live')
         p.flag('lower')
-        p.int('start-at')
+        p.int('start-at'),
+        p.float('seed-bet').default(1.00),
+        p.float('step-profit').default(1.00),
         p.flag('show-sequence')
 
     if args['show-sequence']:
@@ -363,7 +361,10 @@ def main(bid_url=None):
                 if e.check_for_maintenance_window():
                     pass
                 else:
-                    s = martingale_sequence(start_at)
+                    s = martingale_sequence(
+                        args['seed-bet'],
+                        args['step-profit']
+                        )
                     e.trade(s)
 
                 start_at = 0
