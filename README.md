@@ -25,9 +25,11 @@ First install
 [virtualenv](http://www.virtualenv.org/en/latest/#installation) like
 so:
 
-    $ curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-X.X.tar.gz
-    $ tar xvfz virtualenv-X.X.tar.gz
-    $ cd virtualenv-X.X
+    $ cd ~/Downloads
+    $ curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.9.1.tar.gz
+    $ ls -larth
+    $ tar xvfz virtualenv-1.9.1.tar.gz
+    $ cd virtualenv-1.9.1
     $ [sudo] python setup.py install
 
 Once virtualenv is installed create a virtual environment:
