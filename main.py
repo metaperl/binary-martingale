@@ -333,7 +333,7 @@ def main(bid_url=None):
     args = dict()
     with Parser(args) as p:
         p.flag('live')
-        p.flag('lower')
+        p.flag('higher')
         p.int('start-at'),
         p.float('seed-bet').default(1.00),
         p.float('step-profit').default(1.00),
@@ -348,7 +348,7 @@ def main(bid_url=None):
 
             _u = user.User()
             key = 'live' if args['live'] else 'demo'
-            direction = 'lower' if args['lower'] else 'higher'
+            direction = 'higher' if args['higher'] else 'lower'
             start_at = args['start-at']
 
             u = getattr(_u, key)
