@@ -298,7 +298,7 @@ class Entry(object):
             print("OTM")
             return -1
         else:
-            print("Draw. Stake remains the same.")
+            print("Draw.")
             return self._trade(stake_i, stake)
 
 
@@ -333,11 +333,17 @@ def main(bid_url=None):
     args = dict()
     with Parser(args) as p:
         p.flag('live')
-        p.flag('higher')
-        p.int('start-at'),
-        p.float('seed-bet').default(1.00),
-        p.float('step-profit').default(1.00),
+
+        p.float('seed-bet').default(1.00)
+        p.float('step-profit').default(1.00)
         p.flag('show-sequence')
+
+        p.only_one_if_any(
+            p.flag('higher'),
+            p.flag('lower')
+        )
+
+
 
     if args['show-sequence']:
         show_seq()
@@ -348,8 +354,12 @@ def main(bid_url=None):
 
             _u = user.User()
             key = 'live' if args['live'] else 'demo'
-            direction = 'higher' if args['higher'] else 'lower'
-            start_at = args['start-at']
+
+            direction = 'higher'
+            if args['lower']:
+                direction = 'higher'
+
+
 
             u = getattr(_u, key)
             e = Entry(u, browser, bid_url, direction)
@@ -367,7 +377,6 @@ def main(bid_url=None):
                         )
                     e.trade(s)
 
-                start_at = 0
 
 
 if __name__ == '__main__':

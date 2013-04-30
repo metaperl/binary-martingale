@@ -5,15 +5,27 @@ This is a [Python](http://www.python.org) computer program to automatically trad
 
 ## Installation
 
-### Install Python and required python packages
+### Install Python
+
+You may already have Python installed or have [to download
+it](http://python.org/download/).
+
+
+### Install Pip
+
+You may follow [these
+instructions](http://www.pip-installer.org/en/latest/installing.html#installing-globally)
+or install using [Mac Homebrew](http://mxcl.github.io/homebrew/)
+
+### Install required Python packages using pip
 
     pip install -r requirements.txt
 
-### Account configuration
+## Account configuration
 
 Create a demo account and/or live account at Markets World.
 
-Copy sample-user.py to user.py and edit the username and password for
+Copy `sample-user.py` to `user.py` and edit the username and password for
 your live and/or demo accounts.
 
 Type `python main.py` to run the martingale trader. It will only login
@@ -29,6 +41,7 @@ be painful!
 
 For instance, here is what they say about the upgrade:
 
+```
 Natalie: Hello, welcome to Markets World, how may I help you?
 
 Terrence: hello...
@@ -48,11 +61,41 @@ Natalie: BST means "British Summer Time"
 Terrence: Is that the same at GMT?
 
 Natalie: 22:00 BST = 17:00 EST
+```
+# Sample usages
+
+## Default usage:
+
+    [~/prg/binary-martingale]$ ./main.py
+
+This will login to your demo account and make a series of martingale call trades (the default direction)
+
+    [~/prg/binary-martingale]$ ./main.py --lower
+
+Same thing, but will issue a series of put trades
+
+    [~/prg/binary-martingale]$ ./main.py --seed-bet 4
+
+Make the initial bet 4 dollars instead of the default 1 dollar
+
+    [~/prg/binary-martingale]$ ./main.py --step-profit 2
+
+Aim for a profit of 2 dollar with each bet
+
+    [~/prg/binary-martingale]$ ./main.py --live
+
+Trade on the live account instead of the demo account
 
 # Disclaimer
 
 Download and usage of this program makes me completely free of any liability to the downloader and/or user.
 
-## Good luck!
+# Good luck!
 
 Bon voyage! Happy trading!
+
+# Links
+
+-
+  http://iwantyoutoprosper.com/income/transient/binary-options-transient/odyssey-into-binary-options/
+-
