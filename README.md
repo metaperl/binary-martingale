@@ -3,30 +3,68 @@ binary-martingale
 
 This is a [Python](http://www.python.org) computer program to automatically trade binary options martingale style on  MarketsWorld.
 
-## Installation
+# Installation
 
-### Install Python
+## Install Python
 
 You may already have Python installed or have [to download
 it](http://python.org/download/).
 
 
-### Install Pip
+## Install Pip
 
 You may follow [these
 instructions](http://www.pip-installer.org/en/latest/installing.html#installing-globally)
 or install using [Mac Homebrew](http://mxcl.github.io/homebrew/)
 
-### Install required Python packages using pip
+### Not sure how to do this on OS X?
+
+Then simply follow these steps:
+
+First install
+[virtualenv](http://www.virtualenv.org/en/latest/#installation) like
+so:
+
+    $ curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-X.X.tar.gz
+    $ tar xvfz virtualenv-X.X.tar.gz
+    $ cd virtualenv-X.X
+    $ [sudo] python setup.py install
+
+Once virtualenv is installed create a virtual environment:
+
+    $ virtualenv my-trader
+
+Activate the virtual environment:
+
+    $ source ./my-trader/bin/activate
+
+Change into the virtual environment directory:
+
+    $(my-trader) cd ./my-trader
+
+Install the binary-martingale source code:
+
+    $(my-trader) git clone  git://github.com/metaperl/binary-martingale.git
+
+Install the additional packages:
+
+    $(my-trader) pip install -r requirements.txt
+
+That's it! Now just go to "Account configuration"
+
+
+## Install required Python packages using pip
 
     pip install -r requirements.txt
 
-## Account configuration
+# Account configuration
 
 Create a demo account and/or live account at Markets World.
 
 Copy `sample-user.py` to `user.py` and edit the username and password for
-your live and/or demo accounts.
+your live and/or demo accounts. The unix command would be:
+
+    $ cp sample-user.py user.py
 
 Type `python main.py` to run the martingale trader. It will only login
 to a demo account by default. To trade your live account: type `python
