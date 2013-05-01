@@ -141,11 +141,13 @@ def my_time(dt):
 
 class Entry(object):
 
-    def __init__(self, user, browser, url, direction):
+    def __init__(self, user, browser, url, direction, sessions):
         self.user=user
         self.browser=browser
         self.url=url
         self.direction=direction
+        self.sessions=sessions
+
 
     def login(self):
         print("Logging in...")
@@ -163,7 +165,6 @@ class Entry(object):
         time.sleep(6)
         button = self.browser.find_by_xpath('//a[@title="EURUSD"]')
         button.click()
-
 
     def choose_direction(self):
         time.sleep(6)
@@ -305,11 +306,22 @@ class Entry(object):
     @try_method
     def trade(self, seq, iterate=True):
 
-        for i, stake in enumerate(seq, start=1):
-            result = self._trade(i, stake)
+        def tradeloop():
+            for i, stake in enumerate(seq, start=1):
+                result = self._trade(i, stake)
 
-            if result > 0:
-                break
+                if result > 0:
+                    break
+
+
+        if self.sessions > 0:
+            for session in range(session):
+                self.tradeloop()
+        elif self.sessions < 0:
+            while True:
+                self.tradeloop()
+        else:
+            return
 
 
 
@@ -343,6 +355,11 @@ def main(bid_url=None):
             p.flag('lower')
         )
 
+        p.only_one_if_any(
+            p.int('sessions').default(1),
+            p.flag('non-stop')
+        )
+
 
 
     if args['show-sequence']:
@@ -353,16 +370,20 @@ def main(bid_url=None):
         with Browser() as browser:
 
             _u = user.User()
-            key = 'live' if args['live'] else 'demo'
+            user_key = 'live' if args['live'] else 'demo'
 
             direction = 'higher'
             if args['lower']:
                 direction = 'higher'
 
+            sessions = 0
+            if args['sessions']:
+                sessions = args['sessions']
+            elif args['nonstop']:
+                sessions = -1
 
-
-            u = getattr(_u, key)
-            e = Entry(u, browser, bid_url, direction)
+            u = getattr(_u, user_key)
+            e = Entry(u, browser, bid_url, direction, sessions)
             e.login()
             e.select_asset()
             e.choose_direction()
