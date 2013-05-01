@@ -44,6 +44,12 @@ one_hour      = 3600
 
 # https://sheet.zoho.com/public/thequietcenter/martingale
 
+def session_as_string(i):
+    if i < 0:
+        return "No Limit"
+    else:
+        return str(i)
+
 def martingale_sequence(seed_bet, step_profit):
 
     martseq = martingale.currency_ify(martingale.sequence(seed_bet, step_profit))
@@ -290,10 +296,8 @@ class Entry(object):
         #print("\t ", end="")
 
         if self.trade_result() > 0:
-            rejoice = random.randint(60,90)
-            print("* ITM * Let us take", rejoice, "seconds to rejoice!\n")
-            print("---------------------------------------------------------")
-            time.sleep(rejoice)
+
+            print("* ITM *")
             return 1
         elif self.trade_result() < 0:
             print("OTM")
@@ -303,27 +307,37 @@ class Entry(object):
             return self._trade(stake_i, stake)
 
 
+    def intersession_break(self, i):
+        rejoice = random.randint(60,90)
+        notice = """
+Session {0}/{1} completed. Pausing for {2} seconds
+========================================================
+"""
+        print(notice.format(i, session_as_string(self.sessions), rejoice))
+        time.sleep(rejoice)
+
+
     @try_method
     def trade(self, seq, iterate=True):
 
-        def tradeloop():
-            for i, stake in enumerate(seq, start=1):
-                result = self._trade(i, stake)
-
-                if result > 0:
-                    break
+        for i, stake in enumerate(seq, start=1):
+            result = self._trade(i, stake)
+            if result > 0:
+                return result
 
 
-        if self.sessions > 0:
-            for session in range(session):
-                self.tradeloop()
-        elif self.sessions < 0:
-            while True:
-                self.tradeloop()
-        else:
-            return
+    def tradeloop(self, session_number, args):
 
+        self.check_for_maintenance_window()
+        s = martingale_sequence(
+            args['seed-bet'],
+            args['step-profit']
+        )
+        result = self.trade(s)
 
+        self.intersession_break(session_number)
+
+        return result
 
     def check_for_maintenance_window(self, entered=False):
         if in_maintenance_window():
@@ -356,47 +370,56 @@ def main(bid_url=None):
         )
 
         p.only_one_if_any(
-            p.int('sessions').default(1),
-            p.flag('non-stop')
+            p.int('sessions'),
+            p.flag('nonstop')
         )
-
 
 
     if args['show-sequence']:
         show_seq()
         sys.exit(0)
 
-    while True:
-        with Browser() as browser:
+    with Browser() as browser:
 
-            _u = user.User()
-            user_key = 'live' if args['live'] else 'demo'
+        _u = user.User()
+        user_key = 'live' if args['live'] else 'demo'
 
+        direction = 'higher'
+        if args['lower']:
             direction = 'higher'
-            if args['lower']:
-                direction = 'higher'
 
-            sessions = 0
-            if args['sessions']:
-                sessions = args['sessions']
-            elif args['nonstop']:
-                sessions = -1
+        sessions = args['sessions']
+        if sessions:
+            if sessions < 0:
+                raise Exception("sessions must be a whole number")
+            else:
+                sessions = int(args['sessions'])
+        elif args['nonstop']:
+            sessions = -1
 
-            u = getattr(_u, user_key)
-            e = Entry(u, browser, bid_url, direction, sessions)
-            e.login()
-            e.select_asset()
-            e.choose_direction()
+        print("Number of ITMs to take:", session_as_string(sessions))
 
+
+
+        u = getattr(_u, user_key)
+        e = Entry(u, browser, bid_url, direction, sessions)
+        e.login()
+        e.select_asset()
+        e.choose_direction()
+
+        #pdb.set_trace()
+
+        if sessions > 0:
+            for session in range(1, sessions+1):
+                result = e.tradeloop(session, args)
+        elif sessions < 0:
+            session = 0
             while True:
-                if e.check_for_maintenance_window():
-                    pass
-                else:
-                    s = martingale_sequence(
-                        args['seed-bet'],
-                        args['step-profit']
-                        )
-                    e.trade(s)
+                session += 1
+                result = e.tradeloop(session, args)
+        else:
+            return
+
 
 
 
