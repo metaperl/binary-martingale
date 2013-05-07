@@ -396,6 +396,8 @@ def main(bid_url=None):
                 sessions = int(args['sessions'])
         elif args['nonstop']:
             sessions = -1
+        else:
+            sessions = 1
 
         print("Number of ITMs to take:", session_as_string(sessions))
 
