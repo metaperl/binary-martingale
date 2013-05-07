@@ -24,6 +24,7 @@ from splinter import Browser
 
 # local
 import martingale
+import timer
 import user
 
 
@@ -43,6 +44,12 @@ ten_minutes   = 10 * one_minute
 one_hour      = 3600
 
 # https://sheet.zoho.com/public/thequietcenter/martingale
+
+def hours_as_string(hours):
+    if hours:
+        return str(hours)
+    else:
+        return "not specified"
 
 def session_as_string(i):
     if i < 0:
@@ -147,12 +154,13 @@ def my_time(dt):
 
 class Entry(object):
 
-    def __init__(self, user, browser, url, direction, sessions):
+    def __init__(self, user, browser, url, direction, sessions, timer):
         self.user=user
         self.browser=browser
         self.url=url
         self.direction=direction
         self.sessions=sessions
+        self.timer=timer
 
 
     def login(self):
@@ -310,10 +318,10 @@ class Entry(object):
     def intersession_break(self, i):
         rejoice = random.randint(60,90)
         notice = """
-Session {0}/{1} completed. Pausing for {2} seconds
+Session {0}/{1} completed. Pausing for {2} seconds. Total time executed: {3}
 ========================================================
 """
-        print(notice.format(i, session_as_string(self.sessions), rejoice))
+        print(notice.format(i, session_as_string(self.sessions), rejoice, self.timer.status()))
         time.sleep(rejoice)
 
 
@@ -369,6 +377,7 @@ def main(bid_url=None):
             p.flag('lower')
         )
 
+        p.float('max-hours')
         p.only_one_if_any(
             p.int('sessions'),
             p.flag('nonstop')
@@ -399,12 +408,16 @@ def main(bid_url=None):
         else:
             sessions = 1
 
-        print("Number of ITMs to take:", session_as_string(sessions))
+        hours = args['max-hours']
 
+        mytimer = timer.Timer(hours)
+
+        print("Number of ITMs to take:", session_as_string(sessions))
+        print("Number of hours to run:", hours_as_string(hours))
 
 
         u = getattr(_u, user_key)
-        e = Entry(u, browser, bid_url, direction, sessions)
+        e = Entry(u, browser, bid_url, direction, sessions, mytimer)
         e.login()
         e.select_asset()
         e.choose_direction()
@@ -414,11 +427,18 @@ def main(bid_url=None):
         if sessions > 0:
             for session in range(1, sessions+1):
                 result = e.tradeloop(session, args)
+                if mytimer.time_over():
+                    print("Maximum execution hours reached.")
+                    break
         elif sessions < 0:
             session = 0
             while True:
                 session += 1
                 result = e.tradeloop(session, args)
+                if mytimer.time_over():
+                    print("Maximum execution hours reached.")
+                    break
+
         else:
             return
 
