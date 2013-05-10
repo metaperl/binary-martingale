@@ -1,7 +1,7 @@
 binary-martingale
 =================
 
-This is a [Python](http://www.python.org) computer program to automatically trade binary options martingale style on  MarketsWorld.
+This is a [Python](http://www.python.org) computer program to automatically trade [binary options](http://en.wikipedia.org/wiki/Binary_option) [martingale](http://en.wikipedia.org/wiki/Martingale_(betting_system)) style on MarketsWorld.
 
 # Installation
 
