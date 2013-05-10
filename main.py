@@ -424,25 +424,12 @@ def main(bid_url=None):
 
         #pdb.set_trace()
 
-        if sessions > 0:
-            for session in range(1, sessions+1):
-                result = e.tradeloop(session, args)
-                if mytimer.time_over():
-                    print("Maximum execution hours reached.")
-                    break
-        elif sessions < 0:
-            session = 0
-            while True:
-                session += 1
-                result = e.tradeloop(session, args)
-                if mytimer.time_over():
-                    print("Maximum execution hours reached.")
-                    break
-
-        else:
-            return
-
-
+        session_list = range(1, sessions + 1) if sessions > 0 else itertools.count(1)
+        for session in session_list:
+            e.tradeloop(session, args)
+            if mytimer.time_over():
+                print("Maximum execution hours reached.")
+                break
 
 
 if __name__ == '__main__':
