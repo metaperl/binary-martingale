@@ -9,6 +9,7 @@ from collections import defaultdict
 
 import datetime
 from functools import wraps
+import itertools
 import pdb
 import pprint
 import random
@@ -104,9 +105,10 @@ def time_in_range(start, end, x):
     else:
         return start <= x or x <= end
 
+# http://www.binaryoptionsdaily.com/forums/general-group2/daily-profits-losses-screenshots-forum6/469-to-482-martingale-at-markets-world-thread2438.3/#postid-29237
 maintenance_window = dict(
-    start  = datetime.datetime.today().replace(hour=14, minute=50),
-    finish = datetime.datetime.today().replace(hour=17, minute=05),
+    start  = datetime.datetime.today().replace(hour=14, minute=30),
+    finish = datetime.datetime.today().replace(hour=19, minute=00),
 )
 
 
