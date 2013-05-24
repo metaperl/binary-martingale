@@ -163,7 +163,16 @@ class Entry(object):
         self.direction=direction
         self.sessions=sessions
         self.timer=timer
+        self.steps = []
 
+    def run_stats(self):
+        s = """
+Run Stats
+---------
+"""
+        print(s)
+        for i, step in enumerate(self.steps, start=1):
+            print("{0}\t{1}".format(i, step))
 
     def login(self):
         print("Logging in...")
@@ -333,7 +342,8 @@ Session {0}/{1} completed. Pausing for {2} seconds. {3}
         for i, stake in enumerate(seq, start=1):
             result = self._trade(i, stake)
             if result > 0:
-                return result
+                self.steps.append(i)
+                break
 
 
     def tradeloop(self, session_number, args):
@@ -343,11 +353,9 @@ Session {0}/{1} completed. Pausing for {2} seconds. {3}
             args['seed-bet'],
             args['step-profit']
         )
-        result = self.trade(s)
+        self.trade(s)
 
         self.intersession_break(session_number)
-
-        return result
 
     def check_for_maintenance_window(self, entered=False):
         if in_maintenance_window():
@@ -397,7 +405,7 @@ def main(bid_url=None):
 
         direction = 'higher'
         if args['lower']:
-            direction = 'higher'
+            direction = 'lower'
 
         sessions = args['sessions']
         if sessions:
@@ -432,6 +440,8 @@ def main(bid_url=None):
             if mytimer.time_over():
                 print("Maximum execution hours reached.")
                 break
+
+        e.run_stats()
 
 
 if __name__ == '__main__':

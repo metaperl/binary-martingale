@@ -1,3 +1,3 @@
 #!/bin/bash -x
 
-./main.py --live --sessions 13 --max-hours 7
+./main.py --live --sessions 13 --max-hours 5
