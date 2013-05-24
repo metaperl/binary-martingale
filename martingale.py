@@ -6,7 +6,7 @@ def sequence(
         seed_bet=1.00,
         desired_profit=1.00,
         items=13,
-        win_reward=0.7
+        win_reward=0.6
 ):
     r, count = [seed_bet], 1
     for i in range(items - 1):

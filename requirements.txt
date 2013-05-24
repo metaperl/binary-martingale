@@ -1,3 +1,4 @@
 splinter
 blargs
 clint
+numpy

@@ -5,7 +5,7 @@ import sys
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 # system
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 import datetime
 from functools import wraps
@@ -21,6 +21,7 @@ import traceback
 # pypi
 from blargs   import Parser
 from clint.textui import progress
+import numpy
 from splinter import Browser
 
 # local
@@ -167,12 +168,29 @@ class Entry(object):
 
     def run_stats(self):
         s = """
-Run Stats
----------
+Session #\tSteps
+------------------
 """
+        # print(s)
+        # for i, step in enumerate(self.steps, start=1):
+        #     print("{0}\t{1}".format(i, step))
+
+        c = Counter(self.steps)
+
+        print("""
+Total number of sessions {0}
+Mininum number of steps: {1}
+Maximum number of steps: {2}
+Average number of steps: {3}
+""".format(len(self.steps), min(self.steps), max(self.steps), numpy.mean(self.steps)))
+
+        s = """Steps\t# of sessions with this step
+--------------------------------------------"""
         print(s)
-        for i, step in enumerate(self.steps, start=1):
-            print("{0}\t{1}".format(i, step))
+        for t in c.most_common():
+              print("{0}\t{1}".format(*t))
+
+
 
     def login(self):
         print("Logging in...")
