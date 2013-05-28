@@ -59,13 +59,21 @@ def session_as_string(i):
     else:
         return str(i)
 
-def martingale_sequence(seed_bet, step_profit):
+def mk_martseq(seed_bet, step_profit, step_reward):
+    return martingale.currency_ify(
+        martingale.sequence(seed_bet, step_profit, step_reward)
+    )
 
-    martseq = martingale.currency_ify(martingale.sequence(seed_bet, step_profit))
+def martingale_sequence(seed_bet, step_profit, step_reward):
+
+    martseq = mk_martseq(seed_bet, step_profit, step_reward)
 
     return iter(martseq)
 
-def show_seq():
+def show_seq(seed_bet, step_profit, step_reward):
+
+    martseq = mk_martseq(seed_bet, step_profit, step_reward)
+
     for i, e in enumerate(martseq):
         print(1+i, e)
 
@@ -168,12 +176,12 @@ class Entry(object):
 
     def run_stats(self):
         s = """
-Session #\tSteps
+Sess #\tSteps
 ------------------
 """
-        # print(s)
-        # for i, step in enumerate(self.steps, start=1):
-        #     print("{0}\t{1}".format(i, step))
+        print(s)
+        for i, step in enumerate(self.steps, start=1):
+            print("{0}\t{1}".format(i, step))
 
         c = Counter(self.steps)
 
@@ -398,6 +406,7 @@ def main(bid_url=None):
 
         p.float('seed-bet').default(1.00)
         p.float('step-profit').default(1.00)
+        p.float('step-reward').default(0.70)
         p.flag('show-sequence')
 
         p.only_one_if_any(
@@ -411,9 +420,13 @@ def main(bid_url=None):
             p.flag('nonstop')
         )
 
+    print("Seed bet = {seed-bet:.2f}. Step profit = {step-profit:.2f}. Step Reward = {step-reward}".format(**args))
 
     if args['show-sequence']:
-        show_seq()
+        show_seq(            args['seed-bet'],
+                             args['step-profit'],
+                             args['step-reward']
+        )
         sys.exit(0)
 
     with Browser() as browser:
@@ -439,6 +452,7 @@ def main(bid_url=None):
         hours = args['max-hours']
 
         mytimer = timer.Timer(hours)
+
 
         print("Number of ITMs to take:", session_as_string(sessions))
         print("Number of hours to run:", hours_as_string(hours))
