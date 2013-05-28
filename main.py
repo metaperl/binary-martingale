@@ -75,9 +75,11 @@ def show_seq(seed_bet, step_profit, step_reward):
     martseq = mk_martseq(seed_bet, step_profit, step_reward)
 
     s = 0.0
+    print("Step\tWager\tCumulative Wager")
+    print("----\t-----\t----------------")
     for i, e in enumerate(martseq):
         s += float(e)
-        print(1+i, e, s)
+        print("{0}\t{1}\t{2}".format(1+i, e, s))
 
 
 def url_for_action(action):
