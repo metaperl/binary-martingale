@@ -6,6 +6,7 @@ def sequence(
         seed_bet=1.00,
         desired_profit=1.00,
         step_reward=0.7,
+        round_step=False,
         items=13
 ):
     #print seed_bet,  desired_profit, items,  step_reward
@@ -13,6 +14,9 @@ def sequence(
     r, count = [seed_bet], 1
     for i in range(items - 1):
         step_bet = ( sum(r) + desired_profit ) / step_reward
+        if round_step:
+            print("Rounding")
+            step_bet = round(step_bet)
         r.append(step_bet)
 
     return r

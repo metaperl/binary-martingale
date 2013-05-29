@@ -59,20 +59,20 @@ def session_as_string(i):
     else:
         return str(i)
 
-def mk_martseq(seed_bet, step_profit, step_reward):
+def mk_martseq(seed_bet, step_profit, step_reward, round_step):
     return martingale.currency_ify(
-        martingale.sequence(seed_bet, step_profit, step_reward)
+        martingale.sequence(seed_bet, step_profit, step_reward, round_step)
     )
 
 def martingale_sequence(seed_bet, step_profit, step_reward):
 
-    martseq = mk_martseq(seed_bet, step_profit, step_reward)
+    martseq = mk_martseq(seed_bet, step_profit, step_reward, round_step)
 
     return iter(martseq)
 
-def show_seq(seed_bet, step_profit, step_reward):
+def show_seq(seed_bet, step_profit, step_reward, round_step):
 
-    martseq = mk_martseq(seed_bet, step_profit, step_reward)
+    martseq = mk_martseq(seed_bet, step_profit, step_reward, round_step)
 
     s = 0.0
     print("Step\tWager\tCumulative Wager")
@@ -381,7 +381,9 @@ Session {0}/{1} completed. Pausing for {2} seconds. {3}
         self.check_for_maintenance_window()
         s = martingale_sequence(
             args['seed-bet'],
-            args['step-profit']
+            args['step-profit'],
+            args['step-reward'],
+            args['round-step']
         )
         self.trade(s)
 
@@ -411,6 +413,7 @@ def main(bid_url=None):
         p.float('seed-bet').default(1.00)
         p.float('step-profit').default(1.00)
         p.float('step-reward').default(0.70)
+        p.flag('round-step')
         p.flag('show-sequence')
 
         p.only_one_if_any(
@@ -429,7 +432,8 @@ def main(bid_url=None):
     if args['show-sequence']:
         show_seq(            args['seed-bet'],
                              args['step-profit'],
-                             args['step-reward']
+                             args['step-reward'],
+                             args['round-step']
         )
         sys.exit(0)
 
