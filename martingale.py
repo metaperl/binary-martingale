@@ -15,7 +15,6 @@ def sequence(
     for i in range(items - 1):
         step_bet = ( sum(r) + desired_profit ) / step_reward
         if round_step:
-            print("Rounding")
             step_bet = round(step_bet)
         r.append(step_bet)
 
