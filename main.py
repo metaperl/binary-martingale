@@ -64,7 +64,7 @@ def mk_martseq(seed_bet, step_profit, step_reward, round_step):
         martingale.sequence(seed_bet, step_profit, step_reward, round_step)
     )
 
-def martingale_sequence(seed_bet, step_profit, step_reward):
+def martingale_sequence(seed_bet, step_profit, step_reward, round_step):
 
     martseq = mk_martseq(seed_bet, step_profit, step_reward, round_step)
 
@@ -359,7 +359,8 @@ Average number of steps: {3}
     def intersession_break(self, i):
         rejoice = random.randint(60,90)
         notice = """
-Session {0}/{1} completed. Pausing for {2} seconds. {3}
+Session {0}/{1} completed. Pausing for {2} seconds.
+{3}
 ========================================================
 """
         print(notice.format(i, session_as_string(self.sessions), rejoice, self.timer.status()))
