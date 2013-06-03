@@ -37,7 +37,7 @@ base_url = 'http://www.marketsworld.com'
 
 action_path = dict(
     login = "",
-    auctions = 'auctions'
+    bonuses = 'bonuses'
 )
 
 one_minute    = 60
@@ -211,6 +211,14 @@ Average number of steps: {3}
         self.browser.fill('user[password]', self.user['password'])
         button = self.browser.find_by_name('submit').first
         button.click()
+
+    def get_balance(self):
+
+        lookup = '//span[@class="balance"]'
+        span = self.browser.find_by_xpath(lookup).first
+        print ("Balance: {0}".format(span['data-balance']))
+
+
 
     def select_asset(self):
         time.sleep(3)
@@ -470,6 +478,7 @@ def main(bid_url=None):
         u = getattr(_u, user_key)
         e = Entry(u, browser, bid_url, direction, sessions, mytimer)
         e.login()
+        e.get_balance()
         e.select_asset()
         e.choose_direction()
 
@@ -483,6 +492,8 @@ def main(bid_url=None):
                 break
 
         e.run_stats()
+        e.browser.visit(url_for_action('bonuses'))
+        e.get_balance()
 
 
 if __name__ == '__main__':
