@@ -7,7 +7,7 @@ def sequence(
         step_profit=1.00,
         step_reward=0.77, # 60 is the lowest, 94 is the highest
         round_step=False,
-        items=13
+        items=11
 ):
     #print seed_bet,  desired_profit, items,  step_reward
 

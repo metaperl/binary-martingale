@@ -121,7 +121,7 @@ def time_in_range(start, end, x):
 # http://www.binaryoptionsdaily.com/forums/general-group2/daily-profits-losses-screenshots-forum6/469-to-482-martingale-at-markets-world-thread2438.3/#postid-29237
 maintenance_window = dict(
     start  = datetime.datetime.today().replace(hour=14, minute=30),
-    finish = datetime.datetime.today().replace(hour=19, minute=00),
+    finish = datetime.datetime.today().replace(hour=18, minute=30),
 )
 
 
@@ -320,9 +320,6 @@ Average number of steps: {3}
                 continue
 
 
-
-
-
     def wait_for_active_trade_to_finish(self):
         time.sleep(10)
         active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
@@ -438,12 +435,12 @@ def main(bid_url=None):
 
     print("Seed bet = {seed-bet:.2f}. Step profit = {step-profit:.2f}. Step Reward = {step-reward}".format(**args))
 
+    show_seq(            args['seed-bet'],
+                         args['step-profit'],
+                         args['step-reward'],
+                         args['round-step']
+                     )
     if args['show-sequence']:
-        show_seq(            args['seed-bet'],
-                             args['step-profit'],
-                             args['step-reward'],
-                             args['round-step']
-        )
         sys.exit(0)
 
     with Browser() as browser:

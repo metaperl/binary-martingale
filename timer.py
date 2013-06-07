@@ -21,6 +21,6 @@ class Timer(object):
 
     def status(self):
         if self.seconds_to_run:
-            return "Executed for {0} of {1} seconds".format(self.elapsed_time(), self.seconds_to_run)
+            return "Executed for {0} of {1} seconds".format(round(self.elapsed_time()), self.seconds_to_run)
         else:
             return "No time constraints"
