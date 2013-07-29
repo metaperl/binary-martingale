@@ -222,7 +222,7 @@ Average number of steps: {3}
 
     def select_asset(self):
         time.sleep(3)
-        self.browser.find_link_by_text('+ ADD NEW ASSET').first.click()
+        self.browser.find_by_xpath('//*[@id="content_header"]/div/div/div[2]/a').click()
         time.sleep(3)
         self.browser.find_link_by_text('Forex').first.click()
         time.sleep(6)
