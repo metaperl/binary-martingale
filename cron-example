@@ -1,0 +1,1 @@
+5 0 * * *  cd $HOME/Documents/Programming/binary-martingale ; ./1dollar.bash
