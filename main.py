@@ -19,7 +19,7 @@ import time
 import traceback
 
 # pypi
-from blargs   import Parser
+import argh
 from clint.textui import progress
 import numpy
 from splinter import Browser
@@ -27,7 +27,7 @@ from splinter import Browser
 # local
 import martingale
 import timer
-import user
+
 
 
 
@@ -75,11 +75,12 @@ def show_seq(seed_bet, step_profit, step_reward, round_step):
     martseq = mk_martseq(seed_bet, step_profit, step_reward, round_step)
 
     s = 0.0
-    print("Step\tWager\tCumulative Wager")
-    print("----\t-----\t----------------")
+    print("Step\tWager\tCumulative Wager\t70% gain on Wager")
+    print("----\t-----\t----------------\t-----------------")
     for i, e in enumerate(martseq):
         s += float(e)
-        print("{0}\t{1}\t{2}".format(1+i, e, s))
+        p_gain = e + e * 0.7
+        print("{0}\t{1}\t{2}".format(1+i, e, s, p_gain))
 
 
 def url_for_action(action):
@@ -169,10 +170,10 @@ def my_time(dt):
 
 class Entry(object):
 
-    def __init__(self, user, browser, url, direction, sessions, timer):
-        self.user=user
+    def __init__(self, user, pass_, browser, direction, sessions, timer):
+        self._user=user
+        self._pass=pass_
         self.browser=browser
-        self.url=url
         self.direction=direction
         self.sessions=sessions
         self.timer=timer
@@ -207,8 +208,8 @@ Average number of steps: {3}
     def login(self):
         print("Logging in...")
         self.browser.visit(url_for_action('login'))
-        self.browser.fill('user[email]', self.user['username'])
-        self.browser.fill('user[password]', self.user['password'])
+        self.browser.fill('user[email]', self._user)
+        self.browser.fill('user[password]', self._pass)
         button = self.browser.find_by_name('submit').first
         button.click()
 
@@ -382,15 +383,10 @@ Session {0}/{1} completed. Pausing for {2} seconds.
                 break
 
 
-    def tradeloop(self, session_number, args):
+    def tradeloop(self, session_number, s, ignore_window):
 
-        self.check_for_maintenance_window()
-        s = martingale_sequence(
-            args['seed-bet'],
-            args['step-profit'],
-            args['step-reward'],
-            args['round-step']
-        )
+        if not ignore_window:
+            self.check_for_maintenance_window()
         self.trade(s)
 
         self.intersession_break(session_number)
@@ -411,69 +407,44 @@ Session {0}/{1} completed. Pausing for {2} seconds.
 
 
 
-def main(bid_url=None):
-    args = dict()
-    with Parser(args) as p:
-        p.flag('live')
+def main(username=None, password=None,
+         seed_bet=1.00, step_profit=1.00, step_reward=0.70,
+         round_step=False, show_sequence=False,
+         higher=False, lower=True, max_hours=4,
+         sessions=1, nonstop=False, ignore_window=False
+     ):
 
-        p.float('seed-bet').default(1.00)
-        p.float('step-profit').default(1.00)
-        p.float('step-reward').default(0.70)
-        p.flag('round-step')
-        p.flag('show-sequence')
+    print("Seed bet = {0:.2f}. Step profit = {1:.2f}. Step Reward = {2}".format(seed_bet, step_profit, step_reward, round_step))
 
-        p.only_one_if_any(
-            p.flag('higher'),
-            p.flag('lower')
-        )
-
-        p.float('max-hours')
-        p.only_one_if_any(
-            p.int('sessions'),
-            p.flag('nonstop')
-        )
-
-    print("Seed bet = {seed-bet:.2f}. Step profit = {step-profit:.2f}. Step Reward = {step-reward}".format(**args))
-
-    show_seq(            args['seed-bet'],
-                         args['step-profit'],
-                         args['step-reward'],
-                         args['round-step']
+    show_seq(         seed_bet, step_profit, step_reward, round_step
                      )
-    if args['show-sequence']:
+    if show_sequence:
         sys.exit(0)
 
     with Browser() as browser:
 
-        _u = user.User()
-        user_key = 'live' if args['live'] else 'demo'
+        browser.driver.set_window_size(1200,1100)
 
         direction = 'higher'
-        if args['lower']:
+        if lower:
             direction = 'lower'
 
-        sessions = args['sessions']
         if sessions:
             if sessions < 0:
                 raise Exception("sessions must be a whole number")
             else:
-                sessions = int(args['sessions'])
-        elif args['nonstop']:
+                sessions = int(sessions)
+        elif nonstop:
             sessions = -1
-        else:
-            sessions = 1
 
-        hours = args['max-hours']
+        hours = max_hours
 
         mytimer = timer.Timer(hours)
-
 
         print("Number of ITMs to take:", session_as_string(sessions))
         print("Number of hours to run:", hours_as_string(hours))
 
-
-        u = getattr(_u, user_key)
-        e = Entry(u, browser, bid_url, direction, sessions, mytimer)
+        e = Entry(username, password, browser, direction, sessions, mytimer)
         e.login()
         e.get_balance()
         e.select_asset()
@@ -483,7 +454,11 @@ def main(bid_url=None):
 
         session_list = range(1, sessions + 1) if sessions > 0 else itertools.count(1)
         for session in session_list:
-            e.tradeloop(session, args)
+            s = martingale_sequence(
+                seed_bet, step_profit, step_reward, round_step
+            )
+
+            e.tradeloop(session, s, ignore_window)
             if mytimer.time_over():
                 print("Maximum execution hours reached.")
                 break
@@ -494,4 +469,4 @@ def main(bid_url=None):
 
 
 if __name__ == '__main__':
-    main(base_url)
+    argh.dispatch_command(main)

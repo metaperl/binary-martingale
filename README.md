@@ -5,110 +5,38 @@ This is a [Python](http://www.python.org) computer program to automatically trad
 
 # Installation
 
-## Install Python
+## Install Anaconda Python
 
-You may already have Python installed or have [to download
-it](http://python.org/download/).
+No support is provided for any other version of Python. Anaconda
+Python runs on all platforms and has excellent package management.
 
+Please
+[download and install it](https://store.continuum.io/cshop/anaconda/).
 
-## Install Pip
+## Install the Markets World Binary Option Martingale Library
 
-You may follow [these
-instructions](http://www.pip-installer.org/en/latest/installing.html#installing-globally)
-or install using [Mac Homebrew](http://mxcl.github.io/homebrew/)
+The binary options trading library is available as an Anaconda Python
+Library. All you have to do to make it available to you is type:
 
-### Not sure how to do this on OS X?
+    conda install binary_martingale
 
-Then simply follow these steps:
+## That's it.
 
-First install
-[virtualenv](http://www.virtualenv.org/en/latest/#installation) like
-so:
+Time to rock!
 
-    $ cd ~/Downloads
-    $ curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.9.1.tar.gz
-    $ ls -larth
-    $ tar xvfz virtualenv-1.9.1.tar.gz
-    $ cd virtualenv-1.9.1
-    $ [sudo] python setup.py install
-
-Once virtualenv is installed create a virtual environment:
-
-    $ virtualenv my-trader
-
-Activate the virtual environment:
-
-    $ source ./my-trader/bin/activate
-
-Change into the virtual environment directory:
-
-    $(my-trader) cd ./my-trader
-
-Install the binary-martingale source code:
-
-    $(my-trader) git clone  git://github.com/metaperl/binary-martingale.git
-
-Install the additional packages:
-
-    $(my-trader) pip install -r requirements.txt
-
-That's it! Now just go to "Account configuration"
-
-
-## Install required Python packages using pip
-
-    pip install -r requirements.txt
-
-# Account configuration
-
-Create a demo account and/or live account at Markets World.
-
-Copy `sample-user.py` to `user.py` and edit the username and password for
-your live and/or demo accounts. The unix command would be:
-
-    $ cp sample-user.py user.py
-
-Type `python main.py` to run the martingale trader. It will only login
-to a demo account by default. To trade your live account: type `python
-main.py --live'`
-
-
-### Suggestion
-
-Inquire about when the next system upgrade will be. If they halt the
-trading activity in the middle of your martingale sequence, that can
-be painful!
-
-For instance, here is what they say about the upgrade:
-
-```
-Natalie: Hello, welcome to Markets World, how may I help you?
-
-Terrence: hello...
-
-Terrence: what time of the day do the programmers halt all trading activity?
-
-Natalie: Our platform has binary trading available 24 hours 5 days a week whilst the world markets are open for trading. This is from Sunday 22:00 London (17:00 New York) to Friday at the same time.
-
-Terrence: yes, but trading was halted yesterday.
-
-Natalie: during 21:50 - 22:00 BST there is a 10 minute gap where all assets are close, this something occurs everyday due to how our platform was designed.
-
-Terrence: what is "BST"? I'm in the New York time zone.
-
-Natalie: BST means "British Summer Time"
-
-Terrence: Is that the same at GMT?
-
-Natalie: 22:00 BST = 17:00 EST
-```
 # Sample usages
 
 ## Default usage:
 
-    [~/prg/binary-martingale]$ ./main.py
+    [~/prg/binary-martingale]$ ./main.py --username bob --password superguy1
 
 This will login to your demo account and make a series of martingale call trades (the default direction)
+
+
+The `username` and `password` options will be omitted from the
+rest of the samples. They are required in all cases except where you
+simply want to display the martingale betting sequence that will be used.
+
 
     [~/prg/binary-martingale]$ ./main.py --lower
 
@@ -122,9 +50,13 @@ Make the initial bet 4 dollars instead of the default 1 dollar
 
 Aim for a profit of 2 dollar with each bet
 
-    [~/prg/binary-martingale]$ ./main.py --live
+    [~/prg/binary-martingale]$ ./main.py --step-reward .77
 
-Trade on the live account instead of the demo account
+Assume Markets World will pay a 75% profit on a won wager.
+
+    [~/prg/binary-martingale]$ ./main.py --show-sequence
+
+Show the martingale sequence that will be used for betting.
 
 # Disclaimer
 
@@ -136,6 +68,4 @@ Bon voyage! Happy trading!
 
 # Links
 
--
-  http://iwantyoutoprosper.com/income/transient/binary-options-transient/odyssey-into-binary-options/
--
+http://iwantyoutoprosper.com/income/transient/binary-options-transient/odyssey-into-binary-options/

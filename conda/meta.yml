@@ -1,0 +1,30 @@
+package:
+  name: binary_martingale
+  version: 1.0
+
+source:
+  git_url: https://github.com/metaperl/binary-martingale.git
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - python
+    - numpy
+
+  run:
+    - python
+    - setuptools
+    - splinter
+    - argh
+    - clint
+
+
+about:
+  home: https://github.com/metaperl/binary-martingale
+  license: BSD License
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
