@@ -26,12 +26,9 @@ Time to rock!
 
 # Sample usages
 
-## Default usage:
-
     [~/prg/binary-martingale]$ ./main.py --username bob --password superguy1
 
 This will login to your demo account and make a series of martingale call trades (the default direction)
-
 
 The `username` and `password` options will be omitted from the
 rest of the samples. They are required in all cases except where you

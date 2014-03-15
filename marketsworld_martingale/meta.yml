@@ -1,5 +1,5 @@
 package:
-  name: binary_martingale
+  name: marketsworld_martingale
   version: 1.0
 
 source:
@@ -16,10 +16,15 @@ requirements:
   run:
     - python
     - setuptools
+    - numpy
     - splinter
     - argh
     - clint
 
+  script: python setup.py install
+
+
+test:
 
 about:
   home: https://github.com/metaperl/binary-martingale
