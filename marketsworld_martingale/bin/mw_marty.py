@@ -29,8 +29,6 @@ import martingale
 import timer
 
 
-
-
 pp = pprint.PrettyPrinter(indent=4)
 
 base_url = 'http://www.marketsworld.com'
@@ -75,12 +73,15 @@ def show_seq(seed_bet, step_profit, step_reward, round_step):
     martseq = mk_martseq(seed_bet, step_profit, step_reward, round_step)
 
     s = 0.0
-    print("Step\tWager\tCumulative Wager\t70% gain on Wager")
-    print("----\t-----\t----------------\t-----------------")
+    gain_str = "{0}% gain on wager".format(step_reward * 100)
+    print("Step\tWager\tCumulative\t{0}".format(gain_str))
+    print("----\t-----\t----------\t-----------------")
     for i, e in enumerate(martseq):
+        if i > 9: break
+        e = float(e)
         s += float(e)
         p_gain = e + e * 0.7
-        print("{0}\t{1}\t{2}".format(1+i, e, s, p_gain))
+        print("{0}\t{1}\t{2}\t\t{3:.2f}".format(1+i, e, s, p_gain))
 
 
 def url_for_action(action):
@@ -88,7 +89,6 @@ def url_for_action(action):
 
 def loop_forever():
     while True: pass
-
 
 def try_method(fn):
     @wraps(fn)
@@ -102,8 +102,6 @@ def try_method(fn):
     return wrapper
 
 # --- a "class" of maint window functions
-
-
 
 def current_time():
     now = datetime.datetime.now()
@@ -410,14 +408,13 @@ Session {0}/{1} completed. Pausing for {2} seconds.
 def main(username=None, password=None,
          seed_bet=1.00, step_profit=1.00, step_reward=0.70,
          round_step=False, show_sequence=False,
-         higher=False, lower=True, max_hours=4,
+         lower=False, max_hours=4,
          sessions=1, nonstop=False, ignore_window=False
      ):
 
-    print("Seed bet = {0:.2f}. Step profit = {1:.2f}. Step Reward = {2}".format(seed_bet, step_profit, step_reward, round_step))
+    print("Seed bet = {0:.2f}. Step profit = {1:.2f}. Step Reward = {2}%".format(seed_bet, step_profit, step_reward*100, round_step))
 
-    show_seq(         seed_bet, step_profit, step_reward, round_step
-                     )
+    show_seq(seed_bet, step_profit, step_reward, round_step)
     if show_sequence:
         sys.exit(0)
 
@@ -425,9 +422,10 @@ def main(username=None, password=None,
 
         browser.driver.set_window_size(1200,1100)
 
-        direction = 'higher'
         if lower:
             direction = 'lower'
+        else:
+            direction = 'higher'
 
         if sessions:
             if sessions < 0:
