@@ -1,4 +1,6 @@
 #!/usr/bin/python
+
+
 from __future__ import print_function
 import os
 import sys
@@ -77,7 +79,8 @@ def show_seq(seed_bet, step_profit, step_reward, round_step):
     print("Step\tWager\tCumulative\t{0}".format(gain_str))
     print("----\t-----\t----------\t-----------------")
     for i, e in enumerate(martseq):
-        if i > 9: break
+        if i > 9:
+            break
         e = float(e)
         s += float(e)
         p_gain = e + e * 0.7
@@ -85,7 +88,7 @@ def show_seq(seed_bet, step_profit, step_reward, round_step):
 
 
 def url_for_action(action):
-    return "{0}/{1}".format(base_url,action_path[action])
+    return "{0}/{1}".format(base_url, action_path[action])
 
 def loop_forever():
     while True: pass
@@ -97,18 +100,22 @@ def try_method(fn):
             return fn(self, *args, **kwargs)
         except:
             print(traceback.format_exc())
-            while True: pass
+            while True:
+                pass
 
     return wrapper
 
 # --- a "class" of maint window functions
 
+
 def current_time():
     now = datetime.datetime.now()
     return now.strftime("%I:%M%p")
 
+
 def current_time_log_format():
     return "[ {0} ]".format(current_time())
+
 
 def time_in_range(start, end, x):
     """Return true if x is in the range [start, end]"""
@@ -119,8 +126,8 @@ def time_in_range(start, end, x):
 
 # http://www.binaryoptionsdaily.com/forums/general-group2/daily-profits-losses-screenshots-forum6/469-to-482-martingale-at-markets-world-thread2438.3/#postid-29237
 maintenance_window = dict(
-    start  = datetime.datetime.today().replace(hour=14, minute=30),
-    finish = datetime.datetime.today().replace(hour=18, minute=30),
+    start=datetime.datetime.today().replace(hour=14, minute=30),
+    finish=datetime.datetime.today().replace(hour=18, minute=05),
 )
 
 
@@ -168,13 +175,16 @@ def my_time(dt):
 
 class Entry(object):
 
-    def __init__(self, user, pass_, browser, direction, sessions, timer):
-        self._user=user
-        self._pass=pass_
-        self.browser=browser
-        self.direction=direction
-        self.sessions=sessions
-        self.timer=timer
+    def __init__(
+            self, user, pass_, browser, direction, sessions, timer, trending
+    ):
+        self._user = user
+        self._pass = pass_
+        self.browser = browser
+        self.direction = direction
+        self.sessions = sessions
+        self.timer = timer
+        self._trending = trending
         self.steps = []
 
     def run_stats(self):
@@ -193,15 +203,14 @@ Total number of sessions {0}
 Mininum number of steps: {1}
 Maximum number of steps: {2}
 Average number of steps: {3}
-""".format(len(self.steps), min(self.steps), max(self.steps), numpy.mean(self.steps)))
+""".format(
+    len(self.steps), min(self.steps), max(self.steps), numpy.mean(self.steps)))
 
         s = """Steps\t# of sessions with this step
 --------------------------------------------"""
         print(s)
         for t in c.most_common():
-              print("{0}\t{1}".format(*t))
-
-
+            print("{0}\t{1}".format(*t))
 
     def login(self):
         print("Logging in...")
@@ -217,11 +226,10 @@ Average number of steps: {3}
         span = self.browser.find_by_xpath(lookup).first
         print ("Balance: {0}".format(span['data-balance']))
 
-
-
     def select_asset(self):
         time.sleep(3)
-        self.browser.find_by_xpath('//*[@id="content_header"]/div/div/div[2]/a').click()
+        self.browser.find_by_xpath(
+            '//*[@id="content_header"]/div/div/div[2]/a').click()
         time.sleep(3)
         self.browser.find_link_by_text('Forex').first.click()
         time.sleep(6)
@@ -233,10 +241,19 @@ Average number of steps: {3}
         lookup = '//*[@class="bet_button {0} button"]'.format(self.direction)
         button = self.browser.find_by_xpath(lookup)
         button.click()
+        if self._trending:
+            print("Trending: {0}".format(self._trending))
+            print("Current direction:{0}.".format(self.direction))
+            if self.direction == 'lower':
+                self.direction = 'higher'
+            elif self.direction == 'higher':
+                self.direction = 'lower'
+            print("New direction:{0}".format(self.direction))
 
     def input_stake(self, stake_i, amount):
-        print("{0} Stake {1} = ${2} ".format(current_time_log_format(), stake_i, amount))
-        input = self.browser.fill('amount', str(amount))
+        print("{0} Stake {1} = ${2} ".format(
+            current_time_log_format(), stake_i, amount))
+        self.browser.fill('amount', str(amount))
 
     def buy_button_value(self):
         button = self.browser.find_by_name('buy').first
@@ -248,7 +265,6 @@ Average number of steps: {3}
                 break
             else:
                 time.sleep(1)
-
 
     def buy(self):
         self.wait_for_enabled_buy_button()
@@ -278,7 +294,8 @@ Average number of steps: {3}
             sys.exit(1)
 
     def active_trades(self):
-        active_investments_table = self.browser.find_by_xpath('//table[@id="active_investments"]')
+        active_investments_table = self.browser.find_by_xpath(
+            '//table[@id="active_investments"]')
         tbody = active_investments_table.find_by_tag('tbody').first
         try:
             if (tbody.find_by_tag('td').first)['class'] == 'dataTables_empty':
@@ -291,15 +308,13 @@ Average number of steps: {3}
 
     def show_progress_til_expiry(self, date_td):
         date_td
-        date = date_td.value # Apr 22, 19:25:00
+        date = date_td.value  # Apr 22, 19:25:00
         dt = datetime.datetime.strptime(date, '%b %d, %H:%M:%S')
         n = datetime.datetime.now()
         dt = dt.replace(n.year)
 
         diff = dt - n
         wait_time = int(round(diff.total_seconds()))
-
-        #print("waiting", wait_time, "seconds")
 
         for i in progress.bar(range(wait_time)):
             time.sleep(1)
@@ -341,6 +356,7 @@ Average number of steps: {3}
                 time.sleep(10)
 
     def _trade(self, stake_i, stake):
+        self.choose_direction()
         self.input_stake(stake_i, stake)
         self.buy()
 
@@ -409,7 +425,9 @@ def main(username=None, password=None,
          seed_bet=1.00, step_profit=1.00, step_reward=0.70,
          round_step=False, show_sequence=False,
          lower=False, max_hours=4,
-         sessions=1, nonstop=False, ignore_window=False
+         sessions=1, nonstop=False, ignore_window=False,
+         trending=False
+
      ):
 
     print("Seed bet = {0:.2f}. Step profit = {1:.2f}. Step Reward = {2}%".format(seed_bet, step_profit, step_reward*100, round_step))
@@ -442,11 +460,13 @@ def main(username=None, password=None,
         print("Number of ITMs to take:", session_as_string(sessions))
         print("Number of hours to run:", hours_as_string(hours))
 
-        e = Entry(username, password, browser, direction, sessions, mytimer)
+        e = Entry(username, password, browser, direction, sessions, mytimer,
+                  trending
+              )
         e.login()
         e.get_balance()
         e.select_asset()
-        e.choose_direction()
+
 
         #pdb.set_trace()
 

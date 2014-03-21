@@ -5,6 +5,8 @@ This is a [Python](http://www.python.org) computer program to automatically trad
 
 # Installation
 
+
+
 ## Install Anaconda Python
 
 No support is provided for any other version of Python. Anaconda
@@ -13,12 +15,21 @@ Python runs on all platforms and has excellent package management.
 Please
 [download and install it](https://store.continuum.io/cshop/anaconda/).
 
+## Install PyPI requirements
+
+After installing Anaconda Python, type:
+
+    pip install MODULE
+
+where `MODULE` is each of the libraries listed [here](https://github.com/metaperl/binary-martingale/blob/master/requirements.txt)
+
 ## Install the Markets World Binary Option Martingale Library
 
 The binary options trading library is available as an Anaconda Python
-Library. All you have to do to make it available to you is type:
+Library [here](https://binstar.org/metaperl/marketsworld_martingale).
+All you have to do to make it available to you is type:
 
-    conda install binary_martingale
+    conda install -c https://conda.binstar.org/metaperl marketsworld_martingale
 
 ## That's it.
 
@@ -66,3 +77,12 @@ Bon voyage! Happy trading!
 # Links
 
 http://iwantyoutoprosper.com/income/transient/binary-options-transient/odyssey-into-binary-options/
+
+# Authors
+
+Programmer = Terrence Brannon.
+
+## Contributors
+
+The trending idea is due to Samkelo Ndlovu. I appreciate his testing on
+Windows as well.
