@@ -181,6 +181,7 @@ class Entry(object):
         self._user = user
         self._pass = pass_
         self.browser = browser
+        self._iniial_direction = direction
         self.direction = direction
         self.sessions = sessions
         self.timer = timer
@@ -480,6 +481,8 @@ def main(username=None, password=None,
             if mytimer.time_over():
                 print("Maximum execution hours reached.")
                 break
+
+            self.direction = self._iniial_direction
 
         e.run_stats()
         e.browser.visit(url_for_action('bonuses'))
