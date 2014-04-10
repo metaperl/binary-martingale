@@ -425,7 +425,7 @@ Session {0}/{1} completed. Pausing for {2} seconds.
 def main(username=None, password=None,
          seed_bet=1.00, step_profit=1.00, step_reward=0.70,
          round_step=False, show_sequence=False,
-         lower=False, max_hours=4,
+         lower=False, max_hours=5,
          sessions=1, nonstop=False, ignore_window=False,
          trending=False
 
@@ -488,6 +488,8 @@ def main(username=None, password=None,
         e.browser.visit(url_for_action('bonuses'))
         e.get_balance()
 
+def conda_main():
+    argh.dispatch_command(main)
 
 if __name__ == '__main__':
     argh.dispatch_command(main)
