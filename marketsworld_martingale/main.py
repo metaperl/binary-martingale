@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 
 from __future__ import print_function
@@ -181,7 +181,7 @@ class Entry(object):
         self._user = user
         self._pass = pass_
         self.browser = browser
-        self._iniial_direction = direction
+        self._initial_direction = direction
         self.direction = direction
         self.sessions = sessions
         self.timer = timer
@@ -428,7 +428,6 @@ def main(username=None, password=None,
          lower=False, max_hours=5,
          sessions=1, nonstop=False, ignore_window=False,
          trending=False
-
      ):
 
     print("Seed bet = {0:.2f}. Step profit = {1:.2f}. Step Reward = {2}%".format(seed_bet, step_profit, step_reward*100, round_step))
@@ -482,7 +481,7 @@ def main(username=None, password=None,
                 print("Maximum execution hours reached.")
                 break
 
-            self.direction = self._iniial_direction
+            e.direction = e._initial_direction
 
         e.run_stats()
         e.browser.visit(url_for_action('bonuses'))
