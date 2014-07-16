@@ -26,6 +26,11 @@ from clint.textui import progress
 import numpy
 from splinter import Browser
 
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+import selenium.webdriver.support.expected_conditions as EC
+import selenium.webdriver.support.ui as ui
+
 # local
 import martingale
 import timer
@@ -92,6 +97,14 @@ def url_for_action(action):
 
 def loop_forever():
     while True: pass
+
+def wait_visible(driver, locator, by=By.XPATH, timeout=30):
+    try:
+        return ui.WebDriverWait(driver, timeout).until(
+            EC.visibility_of_element_located((by, locator)))
+    except TimeoutException:
+        return False
+
 
 def try_method(fn):
     @wraps(fn)
@@ -238,10 +251,16 @@ Average number of steps: {3}
         button.click()
 
     def choose_direction(self):
-        time.sleep(6)
+        #time.sleep(6)
         lookup = '//*[@class="bet_button {0} button"]'.format(self.direction)
-        button = self.browser.find_by_xpath(lookup)
-        button.click()
+
+        button = wait_visible(self.browser.driver, lookup)
+        if button:
+            button.click()
+        else:
+            raise("Cannot locate direction button to click")
+
+
         if self._trending:
             print("Trending: {0}".format(self._trending))
             print("Current direction:{0}.".format(self.direction))
