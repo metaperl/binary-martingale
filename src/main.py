@@ -32,6 +32,7 @@ import selenium.webdriver.support.expected_conditions as EC
 import selenium.webdriver.support.ui as ui
 
 # local
+import conf
 import martingale
 import timer
 
@@ -189,10 +190,15 @@ def my_time(dt):
 class Entry(object):
 
     def __init__(
-            self, user, pass_, browser, direction, sessions, timer, trending
+            self, loginas, browser, direction, sessions, timer, trending
     ):
-        self._user = user
-        self._pass = pass_
+
+        modobj = sys.modules['conf']
+        print(modobj)
+        d = getattr(modobj, loginas)
+
+        self._user = d['username']
+        self._pass = d['password']
         self.browser = browser
         self._initial_direction = direction
         self.direction = direction
@@ -441,7 +447,7 @@ Session {0}/{1} completed. Pausing for {2} seconds.
 
 
 
-def main(username=None, password=None,
+def main(loginas='demo',
          seed_bet=1.00, step_profit=1.00, step_reward=0.70,
          round_step=False, show_sequence=False,
          lower=False, max_hours=5,
@@ -479,7 +485,7 @@ def main(username=None, password=None,
         print("Number of ITMs to take:", session_as_string(sessions))
         print("Number of hours to run:", hours_as_string(hours))
 
-        e = Entry(username, password, browser, direction, sessions, mytimer,
+        e = Entry(loginas, browser, direction, sessions, mytimer,
                   trending
               )
         e.login()
