@@ -45,65 +45,61 @@ one for your main account.
 
 # Time to rock! Sample usages
 
-NOTE: you must change to the `src` folder for this to work:
+NOTE: you must change to the `src` folder for this to work. On windows
+this is:
 
     cd binary-martingale\src
 
+On Linux/OS X:
+
+    cd binary-martingale/src
+
 or just `cd src` if you are already in the `binary-martingale` folder.
 
-    [~/prg/binary-martingale/src]$ ./main.py
-
-Login to your demo account (configured in conf.py) and make 1 trade.
-
-    [~/prg/binary-martingale/src]$ ./main.py --loginas live
-
-Login to your live account (configured in conf.py) and make 1 trade.
-
-    [~/prg/binary-martingale/src]$ ./main.py --help
 
 Show the options to the program.
+    [~/prg/binary-martingale/src]$ ./main.py --help
 
-    [~/prg/binary-martingale/src/]$ ./main.py --lower
+Login to your demo account (configured in conf.py) and make 1 trade.
+    [~/prg/binary-martingale/src]$ ./main.py
+
+
+Login to your live account (configured in conf.py) and make 1 trade.
+    [~/prg/binary-martingale/src]$ ./main.py --loginas live
+
 
 Issue a put trade (default is call).
-
-    [~/prg/binary-martingale/src/]$ ./main.py --seed-bet 4
+    [~/prg/binary-martingale/src/]$ ./main.py --lower
 
 Make the initial bet 4 dollars instead of the default 1 dollar.
-
-    [~/prg/binary-martingale/src/]$ ./main.py --step-profit 2
+    [~/prg/binary-martingale/src/]$ ./main.py --seed-bet 4
 
 Aim for a profit of 2 dollars with each bet.
-
-    [~/prg/binary-martingale/src/]$ ./main.py --step-reward .77
+    [~/prg/binary-martingale/src/]$ ./main.py --step-profit 2
 
 Assume Markets World will pay a 77% profit on a won wager.
-
-    [~/prg/binary-martingale/src/]$ ./main.py --show-sequence
+    [~/prg/binary-martingale/src/]$ ./main.py --step-reward .77
 
 Show the martingale sequence that will be used for betting.
-
-    [~/prg/binary-martingale/src/]$ ./main.py --round-step
+    [~/prg/binary-martingale/src/]$ ./main.py --show-sequence
 
 Round all bets to even numbers.
-
-    [~/prg/binary-martingale/src/]$ ./main.py --round-step --show-sequence
+    [~/prg/binary-martingale/src/]$ ./main.py --round-step
 
 Show betting sequence when you round all bets to even numbers.
-
-    [~/prg/binary-martingale/src/]$ ./main.py --max-hours 4
+    [~/prg/binary-martingale/src/]$ ./main.py --round-step --show-sequence
 
 Engage in trading for 4 hours max (default is 5)
-
-    [~/prg/binary-martingale/src/]$ ./main.py --sessions 3
+    [~/prg/binary-martingale/src/]$ ./main.py --max-hours 4
 
 Engage in trading until you win 3 times (default is 1)
-
-    [~/prg/binary-martingale/src/]$ ./main.py --ignore-window
+    [~/prg/binary-martingale/src/]$ ./main.py --sessions 3
 
 If this is false (which it is by default), then do not trade between
 2pm and 6pm EST, because MarketsWorld resets their systems at 5pm EST
 and this could interrupt a series of Martingale trades.
+    [~/prg/binary-martingale/src/]$ ./main.py --ignore-window
+
 
 # Disclaimer
 
