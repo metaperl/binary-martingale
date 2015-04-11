@@ -15,27 +15,29 @@ Python runs on all platforms and has excellent package management.
 Please
 [download and install it](https://store.continuum.io/cshop/anaconda/).
 
-## Install PyPI requirements
+## Unpack this binary martingale trader somewhere
 
-After installing Anaconda Python, type:
+You have two options to obtain this software. If you just want to run
+the software, then the simplest thing is to [download a
+zipfile](https://github.com/metaperl/binary-martingale/archive/master.zip)
+and unzip it.
 
-    pip install MODULE
+The other option is to [install git](http://git-scm.com/downloads) and
+then type `git clone git@github.com:metaperl/binary-martingale.git`
+... this is a better option because it will be simpler to update. But
+requires you to [install git](http://git-scm.com/downloads)
 
-where `MODULE` is each of the libraries listed [here](https://github.com/metaperl/binary-martingale/blob/master/requirements.txt)
+## Install support software packages
 
-## Install the Markets World Binary Option Martingale Library
+### Change to the binary martingale directory
 
-The binary options trading library is available as an Anaconda Python
-Library [here](https://binstar.org/metaperl/marketsworld_martingale).
-All you have to do to make it available to you is type:
+    cd binary-martingale
 
-    conda install -c https://conda.binstar.org/metaperl marketsworld_martingale
+### Install the extra modules
 
-## That's it.
+    pip install -r requirements.txt
 
-Time to rock!
-
-# Sample usages
+# Time to rock! Sample usages
 
     [~/prg/binary-martingale]$ ./main.py --username bob --password superguy1
 
