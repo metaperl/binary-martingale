@@ -58,7 +58,7 @@ or just `cd src` if you are already in the `binary-martingale` folder.
 
 
 **NOTE** - there is no need to put `./` before `main.py` when invoking
-  the program. That is a Linux/OS X thing.
+  the program on Windows. That is a Linux/OS X thing.
 
 Show the options to the program.
 
@@ -86,13 +86,18 @@ Aim for a profit of 2 dollars with each bet.
 
     [~/prg/binary-martingale/src/]$ ./main.py --step-profit 2
 
-Assume Markets World will pay a 77% profit on a won wager.
+Assume Markets World will pay a 77% profit on a won wager (default is 70%).
 
     [~/prg/binary-martingale/src/]$ ./main.py --step-reward .77
 
 Show the martingale sequence that will be used for betting.
 
     [~/prg/binary-martingale/src/]$ ./main.py --show-sequence
+
+    [~/prg/binary-martingale/src/]$ ./main.py --show-sequence --step-profit 2
+
+    [~/prg/binary-martingale/src/]$ ./main.py --show-sequence --seed-bet 2
+
 
 Round all bets to even numbers.
 
