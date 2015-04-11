@@ -29,11 +29,11 @@ requires you to [install git](http://git-scm.com/downloads)
 
 ## Install support software packages
 
-### Change to the binary martingale directory
+#### Change to the binary martingale directory
 
     cd binary-martingale
 
-### Install the extra modules
+#### Install the extra modules
 
     pip install -r requirements.txt
 
