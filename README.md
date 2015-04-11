@@ -57,6 +57,9 @@ On Linux/OS X:
 or just `cd src` if you are already in the `binary-martingale` folder.
 
 
+**NOTE** - there is no need to put `./` before `main.py` when invoking
+  the program. That is a Linux/OS X thing.
+
 Show the options to the program.
 
     [~/prg/binary-martingale/src]$ ./main.py --help
