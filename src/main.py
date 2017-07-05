@@ -42,8 +42,9 @@ pp = pprint.PrettyPrinter(indent=4)
 base_url = 'http://www.marketsworld.com'
 
 action_path = dict(
-    login = "",
-    bonuses = 'bonuses'
+    login = "users/log_in?lang=en",
+    bonuses = 'bonuses',
+    trading = 'binary-options-trading'
 )
 
 one_minute    = 60
@@ -94,10 +95,14 @@ def show_seq(seed_bet, step_profit, step_reward, round_step):
 
 
 def url_for_action(action):
-    return "{0}/{1}".format(base_url, action_path[action])
+    url = "{0}/{1}".format(base_url, action_path[action])
+    print("URL for {0}={1}".format(action, url))
+    return url
 
 def loop_forever():
-    while True: pass
+    while True:
+        time.sleep(9999)
+        pass
 
 def wait_visible(driver, locator, by=By.XPATH, timeout=30):
     try:
@@ -207,6 +212,13 @@ class Entry(object):
         self._trending = trending
         self.steps = []
 
+        print("Initialized user to {}".format(self._user))
+
+    def __str__(self):
+        return """
+user {}
+""".format(self._user)
+
     def run_stats(self):
         s = """
 Sess #\tSteps
@@ -235,6 +247,11 @@ Average number of steps: {3}
     def login(self):
         print("Logging in...")
         self.browser.visit(url_for_action('login'))
+        a = self.browser.find_by_xpath(
+            '//a[@class="dropdown-toggle"]')
+        print("Anchor tags: {}".format(a))
+        a[8].click()
+        print("Filling in email with {}".format(self._user))
         self.browser.fill('user[email]', self._user)
         self.browser.fill('user[password]', self._pass)
         button = self.browser.find_by_name('submit').first
@@ -248,6 +265,7 @@ Average number of steps: {3}
 
     def select_asset(self):
         time.sleep(3)
+
         self.browser.find_by_xpath(
             '//*[@id="content_header"]/div/div/div[2]/a').click()
         time.sleep(3)
@@ -461,9 +479,9 @@ def main(loginas='demo',
     if show_sequence:
         sys.exit(0)
 
-    with Browser() as browser:
+    with Browser('chrome') as browser:
 
-        browser.driver.set_window_size(1200,1100)
+        # browser.driver.set_window_size(1200,1100)
 
         if lower:
             direction = 'lower'
@@ -489,8 +507,15 @@ def main(loginas='demo',
                   trending
               )
         e.login()
-        e.get_balance()
-        e.select_asset()
+
+        time.sleep(10)
+
+        a = e.browser.find_by_xpath(
+            '//a[@class="header-button button-fix-on-left"]').first.click()
+
+        # e.browser.visit(url_for_action('trading'))
+        # e.get_balance()
+        #e.select_asset()
 
 
         #pdb.set_trace()
