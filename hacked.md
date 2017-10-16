@@ -31,7 +31,7 @@ any different.
 I still recall logging into my
 Windows VPS and seeing someone moving the mouse around and then I
 began to move the mouse around as well... imagine that - almost like
-walking in on a thief who has robbed your home, virtual style.
+walking in on a thief who has robbed your home, virtual-style.
 
 I don't know how the hacker did his dirty deed. I can only guess.
 
@@ -67,12 +67,11 @@ changed my password for my Windows VPS to something very simple about
     money1
 
 That's right. Once someone had my IP, all they had to do was guess a
-username of "Administrator" and "money1" as a password and they had
-access to $27,000 in funds. No, I don't enjoy looking like an idiot in
+username of "Administrator" and a password of "money1" and they had
+access to $30,000 in funds. No, I don't enjoy looking like an idiot in
 public, but if it will snap
-even one person out of the delusion that there are not thiefs on the
-prowl and that you are running your own bank and need to be super-anal
-about security, then it's what needs to be done.
+even one person out of the delusion that this is all fun-and-games,
+then I have done my job.
 
 # Reflections
 
@@ -98,7 +97,8 @@ funds? Please correct me if I'm wrong here.
 
 I'm a firm believer in not putting all your eggs in one basket. But I
 did get caught with quite a few of my funds in one place in the
-interest in having all of my desktop wallets in once place.
+interest in having all of my desktop wallets in one place.... and
+saving on monthly server costs.
 
 If I had used 4 remote servers and distributed my wallets to those 4
 places, then I would be reporting a loss of just 6 or 7 grand
@@ -111,7 +111,7 @@ wallet* ... don't be intimidated by that term. It simply means that a
 password is needed before you can access funds or see the transaction
 overview.
 
-None of these wallets require a 2FA code to withdraw funds. No bank or
+None of these wallets *require* a passcode to withdraw funds. No bank or
 ATM on this planet would allow funds to move without verifying the
 identity of the mover in at least 2 ways.
 
@@ -122,16 +122,14 @@ as much as you can TODAY!
 
 I had all my funds on a Windows VPS (Virtual Private Server). I am
 lucky that the server farm that I use has 24/7 customer support. They
-were very responsive via live chat. What I am not lucky about is that
-it is not easy to harden my VPS server against attack. More about that
-later.
+were very responsive via live chat.
 
 ## Idle Timeout Screen Lock
 
 Do you want to wake up in the morning to all your funds gone? Me
-either. Having an idle screen timeout may be a pain to deal with every
-day, but I can tell you: waking up to losing $27,000 is way more
-painful.
+either. Having to enter your password every time you see an idle
+screen timeout may be a pain, but I can tell you: waking up to losing
+$27,000 is way more painful.
 
 ## 2-Factor Authentication is a MUST
 
@@ -143,9 +141,9 @@ username and password. Notice how you have to have a debit card
 having your debit card is not enough. Unfortuntely, my windows server
 did not have 2FA enabled.
 
-Once the hacker guessed username=Administrator, password=money1, he
-(or she!) was in. No need to enter a code from my cell phone,
-nothing.
+Once the hacker guessed username/password combination of
+Administrator/money1, he (or she!) was in. No need to enter a code
+from my cell phone, nothing.
 
 And that is what you need to change if you do decide to use a remote
 windows server to store your funds.
@@ -162,7 +160,7 @@ in
 If you are the only one accessing your machine, do not allow any and
 all IP addresses to access your machine
 
-## Change the administrative username
+## Change the administrator username
 
 On a daily basis, [my wordpress site receives about 5-10 attempts to
 break-in using the admin username](https://monosnap.com/file/iS2FujOIhOxxqlSxLL6z4nszQNGUH9).
@@ -170,14 +168,17 @@ break-in using the admin username](https://monosnap.com/file/iS2FujOIhOxxqlSxLL6
 That's right. A measly wordpress site with a bunch of meaningless
 posts. So if there is that much interest in wrongdoing for a measly
 wordpress site, imagine how many more bad guys must be out for my
-money? Actually they are out for my currency, not my money but we dont
+money? Actually they are out for my currency, not my money, but we dont
 need to get
-into [the differences](https://www.youtube.com/watch?v=DyV0OfU3-FU)
-now).
+into [the differences](https://www.youtube.com/watch?v=DyV0OfU3-FU) now.
 
 So yes, change the username from `Administrator`.
 
 # Conclusion
 
-You are running your own bank. Treat it like one. Seriously. Before
+- You are running your own bank. Treat it like one. Seriously. Before
 you are episode 2 in Cryptocurrency Carnage.
+
+- There are no mistakes in this universe. Everyone gets what they
+  deserve. At least I would like to think so. What do you feel? Do you
+  think this is karmic retribution for something I did in the past?
