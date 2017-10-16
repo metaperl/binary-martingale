@@ -22,7 +22,7 @@ import traceback
 
 # pypi
 import argh
-from clint.textui import progress
+from tqdm import tqdm
 import numpy
 from splinter import Browser
 
@@ -352,7 +352,9 @@ Average number of steps: {3}
 
     def show_progress_til_expiry(self, date_td):
         date_td
-        date = date_td.value  # Apr 22, 19:25:00
+        date = date_td.value  # Apr 22, 19:25:00.000
+        date = date.split('.')[0]
+        print("Date={}".format(date))
         dt = datetime.datetime.strptime(date, '%b %d, %H:%M:%S')
         n = datetime.datetime.now()
         dt = dt.replace(n.year)
@@ -360,8 +362,12 @@ Average number of steps: {3}
         diff = dt - n
         wait_time = int(round(diff.total_seconds()))
 
-        for i in progress.bar(range(wait_time)):
+        print("Wait time={}".format(wait_time))
+
+        for i in tqdm(range(wait_time)):
             time.sleep(1)
+
+        print("Progress completed.")
 
     def wait_until_active_trade_is_completed(self, expiry_date_string):
         while True:
@@ -370,7 +376,7 @@ Average number of steps: {3}
                 table = self.browser.find_by_id('completed_investments')
                 tbody = table.find_by_tag('tbody')
                 latest_completed_trade_string = tbody.find_by_tag('td').first.value
-                #print("Latest completed trade date: {0}. Expiry_date_string: {1}.", latest_completed_trade_string, expiry_date_string)
+                print("Latest completed trade date: {}. Expiry_date_string: {}.".format(latest_completed_trade_string, expiry_date_string))
                 if latest_completed_trade_string == expiry_date_string:
                     break
             except e:
@@ -388,8 +394,6 @@ Average number of steps: {3}
         self.show_progress_til_expiry(tds[5])
 
         self.wait_until_active_trade_is_completed(expiry_date_string)
-
-
 
 
     def poll_for_active_trades(self):
