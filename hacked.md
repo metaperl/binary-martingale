@@ -1,29 +1,28 @@
 # Let's get straight to The Cryptocurrency Carnage
 
 ## .25 BTC Stolen from my 1Broker account ($1,250 USD)
-![](https://monosnap.com/file/DD2jfoxplmsyeoRYVdbm7GeUscgkIt)
+![ouch](https://monosnap.com/file/DD2jfoxplmsyeoRYVdbm7GeUscgkIt.png)
 was sent to
 1Km6Q7BuW6R42XKDJrCyTcqo2wrfh5m3hx
 
 ## 20 BCC Stolen ($1,600 USD)
-https://monosnap.com/file/oTjvF7kFFFSEeNDO888BQElkQpWxLR
+![the agony](https://monosnap.com/file/oTjvF7kFFFSEeNDO888BQElkQpWxLR.png)
 was sent to:
 8GrJvV8pjp6CuqakoosGejHKjQERdGg55D
 
 ## 10,990 Pura Stolen ($5,000 USD)
-https://monosnap.com/file/DKecVcLaqW1pGIaJLd4o2QfgFo3iW2
+![I cant take it anymore](https://monosnap.com/file/DKecVcLaqW1pGIaJLd4o2QfgFo3iW2.png)
 was sent to:
 PVGA6ZuBM4uGyE59AY5DkMtH21M6TzL2kb
 
 ## Exodus wallet raped for 1 BTC, 187 Salt, and 45 LTC (USD 8,000)
-I dont feel like recovering the Exodus Wallet to provide
-screenshots or see where they were sent. I do know that this entire
-slaughter began after I posted this message in a Discord channel:
-
+I am unable to get into my Windows VPS and take this screenshot. The
+hacker removed RDP access for the account.
 
 ## 100,000 OKCash (USD 16,000)
-was probably stolen
-
+was probably stolen. It's taking a while for the wallet to sync. But
+he cleaned me out of every other open wallet, so why would this one be
+any different.
 
 # How was I found?
 
