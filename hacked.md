@@ -33,7 +33,7 @@ Windows VPS and seeing someone moving the mouse around and then I
 began to move the mouse around as well... imagine that - almost like
 walking in on a thief who has robbed your home, virtual style.
 
-I don't know how the hacker did his dirty deed. But I can only guess:
+I don't know how the hacker did his dirty deed. I can only guess.
 
 The hack occurred a few hours after I sent this message sent to a
 Discord channel
@@ -82,8 +82,8 @@ I have all the addresses that my coins were sent to. But
 because crypto can be sent anonymously and there is no central
 authority, there is no registry connecting identities to addresses.
 
-I guess if you want total freedom and autonomy you better be ready for
-it.
+I guess if you want total freedom and autonomy you better be ready to
+defend against those who want to misuse it.
 
 ## Back up your wallet frequently
 
@@ -130,6 +130,21 @@ day, but I can tell you: waking up to losing $27,000 is way more
 painful.
 
 ## 2-Factor Authentication is a MUST
+
+[2-Factor Authentication](https://www.securenvoy.com/two-factor-authentication/what-is-2fa.shtm),
+2FA for short, just
+means that there are additional layers of security besides just your
+username and password. Notice how you have to have a debit card
+**AND** your PIN before you can withdraw money from an ATM? Just
+having your debit card is not enough. Unfortuntely, my windows server
+did not have 2FA enabled.
+
+Once the hacker guessed username=Administrator, password=money1, he
+(or she!) was in. No need to enter a code from my cell phone,
+nothing.
+
+And that is what you need to change if you do decide to use a remote
+windows server to store your funds.
 
 While
 [it does seem tortuous to setup 2-Factor Authentication on Windows](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-plan-mfa) certain
