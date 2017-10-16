@@ -1,5 +1,7 @@
 # Let's get straight to The Cryptocurrency Carnage
 
+Here is a rundown of the $30,000 that the hacker relieved me of:
+
 ## .25 BTC Stolen from my 1Broker account ($1,250 USD)
 ![ouch](https://monosnap.com/file/DD2jfoxplmsyeoRYVdbm7GeUscgkIt.png)
 was sent to
@@ -26,14 +28,15 @@ any different.
 
 # How was I found?
 
-So it is clear that I was hacked. I still recall logging into my
+I still recall logging into my
 Windows VPS and seeing someone moving the mouse around and then I
 began to move the mouse around as well... imagine that - almost like
 walking in on a thief who has robbed your home, virtual style.
 
-But anyway, I don't know the full details but can only guess:
+I don't know how the hacker did his dirty deed. But I can only guess:
 
-I sent this message sent to a Discord channel
+The hack occurred a few hours after I sent this message sent to a
+Discord channel
 > I sent bitcoin from my Exodus wallet 2 hours ago and it still has not arrived at Bittrex. It shows as pending with 0/2 confirmations there... why is it taking so long... here is the transaction - https://blockchain.info/tx/a18f06e5f59b5b3840c208e22c5007a7ecc643ccb58ab865166498a2d8810876
 (i'm trying to get into this IOP trade and good ol' bitcoin is taking it's jolly sweet time going from point A to point B)
 
@@ -59,28 +62,28 @@ While IP addresses are not stored in the blockchain, [there are some
 ways to locate the IP that a transaction originated from](https://bitcoin.stackexchange.com/questions/193/how-do-i-see-the-ip-address-of-a-bitcoin-transaction). This,
 and/or random port scanning was a definite part of the hack, because I
 changed my password for my Windows VPS to something very simple about
-3 days ago. When the server was provided to me, it has a very
-complicated one and I was prompted by Windows to change it. For fear
-of being locked out by forgetting a complex password, I changed it to
-something very simple:
+3 days ago:
 
     money1
 
-That's right. Once someone had my IP, all they had to do was guess
-"money1" as a password and they had access to $27,000 in funds. No, I
-don't enjoy looking like an idiot in public, but if it will snap
-someone out of the delusion that there are not thiefs on the prowl and
-that you are running your own bank and need to be super-anal about
-security, then it's what needs to be done.
+That's right. Once someone had my IP, all they had to do was guess a
+username of "Administrator" and "money1" as a password and they had
+access to $27,000 in funds. No, I don't enjoy looking like an idiot in
+public, but if it will snap
+even one person out of the delusion that there are not thiefs on the
+prowl and that you are running your own bank and need to be super-anal
+about security, then it's what needs to be done.
 
 # Reflections
 
-## Centralized Security isnt so bad
+## Centralized security isnt so bad
 
-I have all the addresses that my Bitcoin was sent to. Unfortunately,
-because BTC can be sent to personal accounts, there is likely no
-"authorized money transmitter" to recognize who these addresses belongs
-to.
+I have all the addresses that my coins were sent to. But
+because crypto can be sent anonymously and there is no central
+authority, there is no registry connecting identities to addresses.
+
+I guess if you want total freedom and autonomy you better be ready for
+it.
 
 ## Back up your wallet frequently
 
@@ -104,13 +107,20 @@ wallet* ... don't be intimidated by that term. It simply means that a
 password is needed before you can access funds or see the transaction
 overview.
 
-None of these wallets require a 2FA code to withdraw funds. Every
-exchange has some form of secondary verification.
+None of these wallets require a 2FA code to withdraw funds. No bank or
+ATM on this planet would allow funds to move without verifying the
+identity of the mover in at least 2 ways.
 
-## Instant customer support
+Don't wait for the crypto-world to upgrade to bank-level security. Do
+as much as you can TODAY!
 
-I am lucky that the server farm that I use has 24/7 customer
-support. They were very responsive via live chat.
+# Harden your Windows remote server
+
+I had all my funds on a Windows VPS (Virtual Private Server). I am
+lucky that the server farm that I use has 24/7 customer support. They
+were very responsive via live chat. What I am not lucky about is that
+it is not easy to harden my VPS server against attack. More about that
+later.
 
 ## Idle Timeout Screen Lock
 
@@ -119,14 +129,7 @@ either. Having an idle screen timeout may be a pain to deal with every
 day, but I can tell you: waking up to losing $27,000 is way more
 painful.
 
-## VPS Server Hardening
-
-Again, if you are going to be your own bank, you have to think like a
-bank. It always irritates me when I am trying to visit my online bank
-account and they require me to enter extra forms of identification,
-but now I know why they do it.
-
-### 2-Factor Authentication is a MUST
+## 2-Factor Authentication is a MUST
 
 While
 [it does seem tortuous to setup 2-Factor Authentication on Windows](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-plan-mfa) certain
@@ -134,7 +137,6 @@ VPS providers have made it easy. For instance, you can be done with
 the process
 in
 [a few easy steps at ServerIntellect](https://www.serverintellect.com/support/2-factor/rdp-2-factor-login/).
-
 
 ## Restrict IP access
 
@@ -148,9 +150,11 @@ break-in using the admin username](https://monosnap.com/file/iS2FujOIhOxxqlSxLL6
 
 That's right. A measly wordpress site with a bunch of meaningless
 posts. So if there is that much interest in wrongdoing for a measly
-wordpress site, imagine how many more bad guys must be out for blood
-for money (actually currency but we dont need to get into [the
-differences](https://www.youtube.com/watch?v=DyV0OfU3-FU) now).
+wordpress site, imagine how many more bad guys must be out for my
+money? Actually they are out for my currency, not my money but we dont
+need to get
+into [the differences](https://www.youtube.com/watch?v=DyV0OfU3-FU)
+now).
 
 So yes, change the username from `Administrator`.
 
