@@ -100,6 +100,10 @@ I'm a firm believer in not putting all your eggs in one basket. But I
 did get caught with quite a few of my funds in one place in the
 interest in having all of my desktop wallets in once place.
 
+If I had used 4 remote servers and distributed my wallets to those 4
+places, then I would be reporting a loss of just 6 or 7 grand
+instead of this major setback.
+
 ## ENCRYPT YOUR WALLET
 
 If you take nothing else from this post remember to *encrypt your
